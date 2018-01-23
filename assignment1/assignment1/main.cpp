@@ -52,17 +52,23 @@ vector<Vertex> generate_points(vector<Vertex> control_points) {
     }
     return points;
 }
+
 void draw_curve(vector<Vertex> control_points, int n_iter) {
     // Draw a Bezier curve based on the given control points
     
-    vector<Vertex> points = generate_points(control_points);
-    glBegin(GL_LINES);
-    for (int i = 0; i <= points.size(); i++) {
-        // GLfloat intensity = (700 + lastPoint.z) / 500.0;
-        glVertex2f(points[i].get_x(), points[i].get_y());
+    vector<Vertex> previous = generate_points(control_points);
+    for (int i = 0; i <= n_iter; i++) {
+        vector<Vertex> new_points = generate_points(previous);
+        previous = new_points;
+    }
+    vector<Vertex> final_points = previous;
+    glBegin(GL_POINTS);
+    for (int i = 0; i <= final_points.size(); i++) {
+        glVertex2f(final_points[i].get_x(), final_points[i].get_y());
     }
     glEnd();
 }
+
 void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // Set our color to black (R, G, B)
@@ -78,7 +84,7 @@ void display() {
     eye_l.push_back(Vertex(-0.00f, 0.25f));
     eye_l.push_back(Vertex(-0.5f, 0.75f));
     eye_l.push_back(Vertex(-1.00f, 0.25f));
-    draw_curve(eye_l, 30);
+    draw_curve(eye_l, 10);
     // M
     
     glutSwapBuffers();
