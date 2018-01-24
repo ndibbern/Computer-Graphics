@@ -62,11 +62,14 @@ void draw_curve(vector<Vertex> control_points, int n_iter) {
         previous = new_points;
     }
     vector<Vertex> final_points = previous;
-    glBegin(GL_POINTS);
-    for (int i = 0; i <= final_points.size(); i++) {
+    
+    for (long i = final_points.size()-2; i >= 0; i--) {
+        glBegin(GL_LINES);
         glVertex2f(final_points[i].get_x(), final_points[i].get_y());
+        glVertex2f(final_points[i+1].get_x(), final_points[i+1].get_y());
+        glEnd();
     }
-    glEnd();
+   
 }
 
 void display() {
