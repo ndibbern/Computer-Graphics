@@ -34,28 +34,33 @@ Vertex::Vertex(GLfloat X, GLfloat Y) {
 void setup() {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 }
+
+Vertex bezier_curve(Vertex p0, Vertex p1, Vertex p2, float t ) {
+    GLfloat x = (1 - t) * ((1 - t) * p0.get_x() + t * p1.get_x() ) + t* ((1 - t) * p1.get_x() + p2.get_x());
+    GLfloat y = (1 - t) * ((1 - t) * p0.get_y() + t * p1.get_y() ) + t* ((1 - t) * p1.get_y() + p2.get_y());
+    return Vertex(x,y);
+}
+
 vector<Vertex> generate_points(vector<Vertex> control_points) {
     vector<Vertex> points;
-    // Iterate through our initial control points by pairs
-    for (int p = 0; p < control_points.size()-1; p++) {
-        Vertex v_0 = control_points[p];
-        Vertex v_1 = control_points[p+1];
-        // First point at the 1/4 position along the line from v_0 and v_1
-        GLfloat y1 = (3.0/4.0)*v_0.get_y()+(1.0/4.0)*v_1.get_y();
-        GLfloat x1 = (3.0/4.0)*v_0.get_x()+(1.0/4.0)*v_1.get_x();
-        // Second point at the 3/4 position along the line from v_0 and v_1
-        GLfloat y2 = (1.0/4.0)*v_0.get_y()+(3.0/4.0)*v_1.get_y();
-        GLfloat x2 = (1.0/4.0)*v_0.get_x()+(3.0/4.0)*v_1.get_x();
-        // push_back simply adds a new element to the back of your vector (list)
-        points.push_back(Vertex(x1, y1));
-        points.push_back(Vertex(x2, y2));
+    // Iterate through our initial control points
+    for (int p = 0; p < control_points.size()-2; p+=2) {
+        Vertex p_0 = control_points[p];
+        Vertex p_1 = control_points[p+1];
+        Vertex p_2 = control_points[p+2];
+        
+        for (int t = 0; t<=1; t+= 0.5){
+            Vertex new_point =  bezier_curve(p_0,p_1,p_2, t);
+            // push_back simply adds a new elements to the back of your vector (list)
+            points.push_back(new_point);
+            
+        }
     }
     return points;
 }
 
 void draw_curve(vector<Vertex> control_points, int n_iter) {
     // Draw a Bezier curve based on the given control points
-    
     vector<Vertex> previous = generate_points(control_points);
     for (int i = 0; i <= n_iter; i++) {
         vector<Vertex> new_points = generate_points(previous);
