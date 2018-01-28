@@ -36,40 +36,40 @@ void setup() {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
-int n_choose_i(int n, int i){
-    int result = 1;
-    for (int k = 1; k <= i; k++){
-        result *= n - (i - k);
-        result /= i;
-    }
-    return result;
+int binomial_coeff(int n, int k){
+    if (k==0 || k==n)
+        return 1;
+    return  binomial_coeff(n-1, k-1) + binomial_coeff(n-1, k);
 }
 
-Vertex bezier_curve(vector<Vertex> control_points, float t) {
-    GLfloat x = 0.0;
-    GLfloat y = 0.0;
-    int n = (int) control_points.size()-1;
+Vertex B(vector<Vertex> control_points, float t) {
+    float x = 0.0;
+    float y = 0.0;
+    int n = (int) control_points.size() - 1;
     
-    for (int i = 0; i < n; i++) {
-        x += n_choose_i(n,i) * std::pow(1-t, n-i) *std::pow(t, i)*control_points[i].get_x();
-        y += n_choose_i(n,i) * std::pow(1-t, n-i) *std::pow(t, i)*control_points[i].get_y();
+    for (int i = 0; i <= n; i++) {
+        x += binomial_coeff(n, i) * pow(1-t, n-i) * pow(t, i) * control_points[i].get_x();
+        y += binomial_coeff(n, i) * pow(1-t, n-i) * pow(t, i) * control_points[i].get_y();
     }
-    return Vertex(x,y);
+    cout << x << ", " << y << endl;
+    return Vertex(x, y);
 }
 
-vector<Vertex> generate_points(vector<Vertex> control_points) {
+vector<Vertex> generate_points(vector<Vertex> control_points, float dt) {
     vector<Vertex> points;
-    for (float t = 0; t<=1; t+= 0.5){
-        Vertex new_point =  bezier_curve(control_points, t);
+    for (float t = 0; t <= 1; t += dt){
+        Vertex new_point = B(control_points, t);
         points.push_back(new_point);
     }
+    Vertex new_point = B(control_points, 1);
+    points.push_back(new_point);
     return points;
 }
 
-void draw_curve(vector<Vertex> control_points, int n_iter) {
+void draw_curve(vector<Vertex> control_points, float dt) {
     // Draw a Bezier curve based on the given control points
-    vector<Vertex> final_points = generate_points(control_points);
-    for (long i = final_points.size()-2; i >= 0; i--) {
+    vector<Vertex> final_points = generate_points(control_points, dt);
+    for (int i = 0; i < final_points.size() - 1; ++i) {
         glBegin(GL_LINES);
         glVertex2f(final_points[i].get_x(), final_points[i].get_y());
         glVertex2f(final_points[i+1].get_x(), final_points[i+1].get_y());
@@ -85,15 +85,15 @@ void display() {
     //Right eye
     vector<Vertex> eye_r;
     eye_r.push_back(Vertex(0.00f, 0.25f));
-    eye_r.push_back(Vertex(0.5f, 0.75f));
-    eye_r.push_back(Vertex(1.00f, 0.25f));
-    draw_curve(eye_r, 10);
+    eye_r.push_back(Vertex(0.4f, 0.75f));
+    eye_r.push_back(Vertex(0.8f, 0.25f));
+    draw_curve(eye_r, 0.1f);
     // Left eye
-    vector<Vertex> eye_l;
-    eye_l.push_back(Vertex(-0.00f, 0.25f));
-    eye_l.push_back(Vertex(-0.5f, 0.75f));
-    eye_l.push_back(Vertex(-1.00f, 0.25f));
-    draw_curve(eye_l, 10);
+//    vector<Vertex> eye_l;
+//    eye_l.push_back(Vertex(-0.00f, 0.25f));
+//    eye_l.push_back(Vertex(-0.5f, 0.75f));
+//    eye_l.push_back(Vertex(-1.00f, 0.25f));
+//    draw_curve(eye_l, 10);
     // M
     
     glutSwapBuffers();
