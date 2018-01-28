@@ -59,32 +59,23 @@ Vertex bezier_curve(vector<Vertex> control_points, float t) {
 
 vector<Vertex> generate_points(vector<Vertex> control_points) {
     vector<Vertex> points;
-    // Iterate through our initial control points
-
-        for (float t = 0; t<=1; t+= 0.01){
-            Vertex new_point =  bezier_curve(control_points, t);
-            // push_back simply adds a new elements to the back of your vector (list)
-            points.push_back(new_point);
-        }
+    for (float t = 0; t<=1; t+= 0.5){
+        Vertex new_point =  bezier_curve(control_points, t);
+        points.push_back(new_point);
+    }
     return points;
 }
 
 void draw_curve(vector<Vertex> control_points, int n_iter) {
     // Draw a Bezier curve based on the given control points
-    vector<Vertex> previous = generate_points(control_points);
-    for (int i = 0; i <= n_iter; i++) {
-        vector<Vertex> new_points = generate_points(previous);
-        previous = new_points;
-    }
-    vector<Vertex> final_points = previous;
-    
+    vector<Vertex> final_points = generate_points(control_points);
     for (long i = final_points.size()-2; i >= 0; i--) {
         glBegin(GL_LINES);
         glVertex2f(final_points[i].get_x(), final_points[i].get_y());
         glVertex2f(final_points[i+1].get_x(), final_points[i+1].get_y());
         glEnd();
     }
-   
+    
 }
 
 void display() {
@@ -117,4 +108,3 @@ int main(int argc, char *argv[]) {
     glutMainLoop();
     return 0;
 }
-
