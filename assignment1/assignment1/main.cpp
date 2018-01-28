@@ -13,6 +13,7 @@
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 #include <GLUT/glut.h>
+#include <cmath>
 #else
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -28,34 +29,43 @@ public:
     GLfloat get_y() { return y; };
     GLfloat get_x() { return x; };
 };
-Vertex::Vertex(GLfloat X, GLfloat Y) {
+Vertex::Vertex(GLfloat X, GLfloat Y){
     x = X;
     y = Y; }
 void setup() {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
-Vertex bezier_curve(Vertex p0, Vertex p1, Vertex p2, float t ) {
-    GLfloat x = (1 - t) * ((1 - t) * p0.get_x() + t * p1.get_x() ) + t* ((1 - t) * p1.get_x() + p2.get_x());
-    GLfloat y = (1 - t) * ((1 - t) * p0.get_y() + t * p1.get_y() ) + t* ((1 - t) * p1.get_y() + p2.get_y());
+int n_choose_i(int n, int i){
+    int result = 1;
+    for (int k = 1; k <= i; k++){
+        result *= n - (i - k);
+        result /= i;
+    }
+    return result;
+}
+
+Vertex bezier_curve(vector<Vertex> control_points, float t) {
+    GLfloat x = 0.0;
+    GLfloat y = 0.0;
+    int n = (int) control_points.size()-1;
+    
+    for (int i = 0; i < n; i++) {
+        x += n_choose_i(n,i) * std::pow(1-t, n-i) *std::pow(t, i)*control_points[i].get_x();
+        y += n_choose_i(n,i) * std::pow(1-t, n-i) *std::pow(t, i)*control_points[i].get_y();
+    }
     return Vertex(x,y);
 }
 
 vector<Vertex> generate_points(vector<Vertex> control_points) {
     vector<Vertex> points;
     // Iterate through our initial control points
-    for (int p = 0; p < control_points.size()-2; p+=2) {
-        Vertex p_0 = control_points[p];
-        Vertex p_1 = control_points[p+1];
-        Vertex p_2 = control_points[p+2];
-        
-        for (int t = 0; t<=1; t+= 0.5){
-            Vertex new_point =  bezier_curve(p_0,p_1,p_2, t);
+
+        for (float t = 0; t<=1; t+= 0.01){
+            Vertex new_point =  bezier_curve(control_points, t);
             // push_back simply adds a new elements to the back of your vector (list)
             points.push_back(new_point);
-            
         }
-    }
     return points;
 }
 
