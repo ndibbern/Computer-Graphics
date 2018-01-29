@@ -51,7 +51,8 @@ Vertex B(vector<Vertex> control_points, float t) {
         x += binomial_coeff(n, i) * pow(1-t, n-i) * pow(t, i) * control_points[i].get_x();
         y += binomial_coeff(n, i) * pow(1-t, n-i) * pow(t, i) * control_points[i].get_y();
     }
-    cout << x << ", " << y << endl;
+    //cout << x << ", " << y << n << endl;
+    cout << n << endl;
     return Vertex(x, y);
 }
 
@@ -75,7 +76,6 @@ void draw_curve(vector<Vertex> control_points, float dt) {
         glVertex2f(final_points[i+1].get_x(), final_points[i+1].get_y());
         glEnd();
     }
-    
 }
 
 void display() {
@@ -84,17 +84,35 @@ void display() {
     glColor3f(0.0f, 0.0f, 0.0f);
     //Right eye
     vector<Vertex> eye_r;
-    eye_r.push_back(Vertex(0.00f, 0.25f));
+    eye_r.push_back(Vertex(0.05f, 0.25f));
     eye_r.push_back(Vertex(0.4f, 0.75f));
     eye_r.push_back(Vertex(0.8f, 0.25f));
-    draw_curve(eye_r, 0.1f);
+    draw_curve(eye_r, 0.01f);
     // Left eye
-//    vector<Vertex> eye_l;
-//    eye_l.push_back(Vertex(-0.00f, 0.25f));
-//    eye_l.push_back(Vertex(-0.5f, 0.75f));
-//    eye_l.push_back(Vertex(-1.00f, 0.25f));
-//    draw_curve(eye_l, 10);
-    // M
+    vector<Vertex> eye_l;
+    eye_l.push_back(Vertex(-0.05f, 0.25f));
+    eye_l.push_back(Vertex(-0.4f, 0.75f));
+    eye_l.push_back(Vertex(-0.80f, 0.25f));
+    draw_curve(eye_l, 0.01);
+    // Moustache
+    vector<Vertex> stash;
+    stash.push_back(Vertex(0.40f, -0.45f));
+    stash.push_back(Vertex(0.30f, -0.20f));
+    stash.push_back(Vertex(0.20f, -0.45f));
+    stash.push_back(Vertex(0.10f, -0.20f));
+    stash.push_back(Vertex(0.00f, -0.45f));
+    stash.push_back(Vertex(-0.10f, -0.20f));
+    stash.push_back(Vertex(-0.20f, -0.45f));
+    stash.push_back(Vertex(-0.30f, -0.20f));
+    stash.push_back(Vertex(-0.40f, -0.45f));
+    draw_curve(stash, 0.1);
+    
+    //Mouth
+    vector<Vertex> mouth;
+    mouth.push_back(Vertex(1.00f, -0.25f));
+    mouth.push_back(Vertex(0.00f, -0.75f));
+    mouth.push_back(Vertex(-1.00f, -0.25f));
+    draw_curve(mouth, 0.1);
     
     glutSwapBuffers();
 }
