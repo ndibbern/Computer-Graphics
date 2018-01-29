@@ -13,12 +13,10 @@
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 #include <GLUT/glut.h>
-#include <cmath>
 #else
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
-#include <cmath>
 #endif
 #include <vector>
 #include <iostream>
@@ -30,53 +28,48 @@ public:
     GLfloat get_y() { return y; };
     GLfloat get_x() { return x; };
 };
-Vertex::Vertex(GLfloat X, GLfloat Y){
+Vertex::Vertex(GLfloat X, GLfloat Y) {
     x = X;
     y = Y; }
 void setup() {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
-int binomial_coeff(int n, int k){
-    if (k==0 || k==n)
-        return 1;
-    return  binomial_coeff(n-1, k-1) + binomial_coeff(n-1, k);
-}
 
-Vertex B(vector<Vertex> control_points, float t) {
-    float x = 0.0;
-    float y = 0.0;
-    int n = (int) control_points.size() - 1;
-    
-    for (int i = 0; i <= n; i++) {
-        x += binomial_coeff(n, i) * pow(1-t, n-i) * pow(t, i) * control_points[i].get_x();
-        y += binomial_coeff(n, i) * pow(1-t, n-i) * pow(t, i) * control_points[i].get_y();
-    }
-    //cout << x << ", " << y << n << endl;
-    cout << n << endl;
-    return Vertex(x, y);
-}
-
-vector<Vertex> generate_points(vector<Vertex> control_points, float dt) {
+vector<Vertex> generate_points(vector<Vertex> control_points) {
     vector<Vertex> points;
-    for (float t = 0; t <= 1; t += dt){
-        Vertex new_point = B(control_points, t);
-        points.push_back(new_point);
-    }
-    Vertex new_point = B(control_points, 1);
-    points.push_back(new_point);
+    points.push_back(control_points[0]);
+        for (int m = 0; m < control_points.size() - 1; m++) {
+            //step through points
+            //take mid points
+            Vertex v_0 = control_points[m];
+            Vertex v_1 = control_points[m+1];
+            // First point at the 1/2 position along the line from v_0 and v_1
+            GLfloat y = (0.5)*v_0.get_y()+(0.5)*v_1.get_y();
+            GLfloat x = (0.5)*v_0.get_x()+(0.5)*v_1.get_x();
+            points.push_back(Vertex(x, y));
+        }
+    points.push_back(control_points[control_points.size()-1]);
     return points;
 }
 
-void draw_curve(vector<Vertex> control_points, float dt) {
+void draw_curve(vector<Vertex> control_points, int n_iter) {
     // Draw a Bezier curve based on the given control points
-    vector<Vertex> final_points = generate_points(control_points, dt);
-    for (int i = 0; i < final_points.size() - 1; ++i) {
+    
+    vector<Vertex> previous = control_points;
+    for (int i = 0; i <= n_iter; i++) {
+        vector<Vertex> new_points = generate_points(previous);
+        previous = new_points;
+    }
+    vector<Vertex> final_points = previous;
+    
+    for (long i = final_points.size()-2; i >= 0; i--) {
         glBegin(GL_LINES);
-        glVertex2f(final_points[i].get_x(), final_points[i].get_y());
         glVertex2f(final_points[i+1].get_x(), final_points[i+1].get_y());
+        glVertex2f(final_points[i].get_x(), final_points[i].get_y());
         glEnd();
     }
+    
 }
 
 void display() {
@@ -85,18 +78,21 @@ void display() {
     glColor3f(0.0f, 0.0f, 0.0f);
     //Right eye
     vector<Vertex> eye_r;
-    eye_r.push_back(Vertex(0.05f, 0.25f));
-    eye_r.push_back(Vertex(0.4f, 0.75f));
-    eye_r.push_back(Vertex(0.8f, 0.25f));
-    draw_curve(eye_r, 0.1f);
-//    // Left eye
+    eye_r.push_back(Vertex(0.00f, 0.25f));
+    eye_r.push_back(Vertex(0.5f, 0.75f));
+    eye_r.push_back(Vertex(1.00f, 0.25f));
+    draw_curve(eye_r, 10);
+    // Left eye
     vector<Vertex> eye_l;
-    eye_l.push_back(Vertex(-0.05f, 0.25f));
-    eye_l.push_back(Vertex(-0.4f, 0.75f));
-    eye_l.push_back(Vertex(-0.80f, 0.25f));
-    draw_curve(eye_l, 0.1);
-//    // Moustache
+    eye_l.push_back(Vertex(-0.00f, 0.25f));
+    eye_l.push_back(Vertex(-0.5f, 0.75f));
+    eye_l.push_back(Vertex(-1.00f, 0.25f));
+    draw_curve(eye_l, 10);
+    
+    
     vector<Vertex> stash;
+    vector<Vertex> stash1;
+    vector<Vertex> stash2;
     stash.push_back(Vertex(0.40f, -0.45f));
     stash.push_back(Vertex(0.30f, -0.20f));
     stash.push_back(Vertex(0.20f, -0.45f));
@@ -106,22 +102,7 @@ void display() {
     stash.push_back(Vertex(-0.20f, -0.45f));
     stash.push_back(Vertex(-0.30f, -0.20f));
     stash.push_back(Vertex(-0.40f, -0.45f));
-    draw_curve(stash, 0.00001);
-//
-//    //Mouth
-//    vector<Vertex> mouth;
-//    mouth.push_back(Vertex(1.00f, -0.25f));
-//    mouth.push_back(Vertex(0.00f, -0.75f));
-//    mouth.push_back(Vertex(-1.00f, -0.25f));
-//    draw_curve(mouth, 0.1);
-    
-//    vector<Vertex> hola;
-//    hola.push_back(Vertex(0.00f, 1.00f));
-//    hola.push_back(Vertex(-1.00f, 0.00f));
-//     hola.push_back(Vertex(0.0f, -1.00f));
-//    hola.push_back(Vertex(1.00f, 0.00f));
-//    hola.push_back(Vertex(0.00f, 1.00f));
-//    draw_curve(hola, 0.01);
+    draw_curve(stash, 10);
     
     glutSwapBuffers();
 }
@@ -135,3 +116,4 @@ int main(int argc, char *argv[]) {
     glutMainLoop();
     return 0;
 }
+
