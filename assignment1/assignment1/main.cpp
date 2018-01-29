@@ -18,6 +18,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
+#include <cmath>
 #endif
 #include <vector>
 #include <iostream>
@@ -87,14 +88,14 @@ void display() {
     eye_r.push_back(Vertex(0.05f, 0.25f));
     eye_r.push_back(Vertex(0.4f, 0.75f));
     eye_r.push_back(Vertex(0.8f, 0.25f));
-    draw_curve(eye_r, 0.01f);
-    // Left eye
+    draw_curve(eye_r, 0.1f);
+//    // Left eye
     vector<Vertex> eye_l;
     eye_l.push_back(Vertex(-0.05f, 0.25f));
     eye_l.push_back(Vertex(-0.4f, 0.75f));
     eye_l.push_back(Vertex(-0.80f, 0.25f));
-    draw_curve(eye_l, 0.01);
-    // Moustache
+    draw_curve(eye_l, 0.1);
+//    // Moustache
     vector<Vertex> stash;
     stash.push_back(Vertex(0.40f, -0.45f));
     stash.push_back(Vertex(0.30f, -0.20f));
@@ -105,14 +106,22 @@ void display() {
     stash.push_back(Vertex(-0.20f, -0.45f));
     stash.push_back(Vertex(-0.30f, -0.20f));
     stash.push_back(Vertex(-0.40f, -0.45f));
-    draw_curve(stash, 0.1);
+    draw_curve(stash, 0.00001);
+//
+//    //Mouth
+//    vector<Vertex> mouth;
+//    mouth.push_back(Vertex(1.00f, -0.25f));
+//    mouth.push_back(Vertex(0.00f, -0.75f));
+//    mouth.push_back(Vertex(-1.00f, -0.25f));
+//    draw_curve(mouth, 0.1);
     
-    //Mouth
-    vector<Vertex> mouth;
-    mouth.push_back(Vertex(1.00f, -0.25f));
-    mouth.push_back(Vertex(0.00f, -0.75f));
-    mouth.push_back(Vertex(-1.00f, -0.25f));
-    draw_curve(mouth, 0.1);
+//    vector<Vertex> hola;
+//    hola.push_back(Vertex(0.00f, 1.00f));
+//    hola.push_back(Vertex(-1.00f, 0.00f));
+//     hola.push_back(Vertex(0.0f, -1.00f));
+//    hola.push_back(Vertex(1.00f, 0.00f));
+//    hola.push_back(Vertex(0.00f, 1.00f));
+//    draw_curve(hola, 0.01);
     
     glutSwapBuffers();
 }
