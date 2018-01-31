@@ -76,12 +76,42 @@ void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // Set our color to black (R, G, B)
     glColor3f(0.0f, 0.0f, 0.0f);
-    //Right eye
+    //Right eye top
     vector<Vertex> eye_r;
     eye_r.push_back(Vertex(0.05f, 0.00f));
     eye_r.push_back(Vertex(0.2f, 0.85f));
     eye_r.push_back(Vertex(0.4f, 0.00f));
     draw_curve(eye_r, 30);
+    
+    vector<Vertex> eye_r_bot;
+    eye_r_bot.push_back(Vertex(0.05f, -0.00f));
+    eye_r_bot.push_back(Vertex(0.2f, -0.85f));
+    eye_r_bot.push_back(Vertex(0.4f, -0.00f));
+    draw_curve(eye_r_bot, 30);
+    
+    vector<Vertex> eye_r_interior;
+    eye_r_interior.push_back(Vertex(0.2f, 0.12f));
+    eye_r_interior.push_back(Vertex(-0.3f, 0.00f));
+    eye_r_interior.push_back(Vertex(0.2f, -0.12f));
+    draw_curve(eye_r_interior, 30);
+    
+    vector<Vertex> eye_r_interior_l;
+    eye_r_interior_l.push_back(Vertex(0.25f, 0.12f));
+    eye_r_interior_l.push_back(Vertex(0.7f, 0.00f));
+    eye_r_interior_l.push_back(Vertex(0.25f, -0.12f));
+    draw_curve(eye_r_interior_l, 30);
+    
+    vector<Vertex> eye_l_interior_l;
+    eye_l_interior_l.push_back(Vertex(-0.2f, 0.12f));
+    eye_l_interior_l.push_back(Vertex(0.3f, 0.00f));
+    eye_l_interior_l.push_back(Vertex(-0.2f, -0.12f));
+    draw_curve(eye_l_interior_l, 30);
+    
+    vector<Vertex> eye_l_interior_r;
+    eye_l_interior_r.push_back(Vertex(-0.24f, 0.12f));
+    eye_l_interior_r.push_back(Vertex(-0.7f, 0.00f));
+    eye_l_interior_r.push_back(Vertex(-0.24f, -0.12f));
+    draw_curve(eye_l_interior_r, 30);
     //    // Left eye
     vector<Vertex> eye_l;
     eye_l.push_back(Vertex(-0.05f, 0.00f));
@@ -89,20 +119,32 @@ void display() {
     eye_l.push_back(Vertex(-0.40f, 0.00f));
     draw_curve(eye_l, 30);
     
+    vector<Vertex> eye_l_bot;
+    eye_l_bot.push_back(Vertex(-0.05f, -0.00f));
+    eye_l_bot.push_back(Vertex(-0.2f, -0.85f));
+    eye_l_bot.push_back(Vertex(-0.4f, -0.00f));
+    draw_curve(eye_l_bot, 30);
     
     vector<Vertex> stash;
     vector<Vertex> stash1;
     vector<Vertex> stash2;
+    vector<Vertex> stash3;
     stash.push_back(Vertex(0.40f, -0.45f));
     stash.push_back(Vertex(0.30f, -0.20f));
     stash.push_back(Vertex(0.20f, -0.45f));
-    stash.push_back(Vertex(0.10f, -0.20f));
-    stash.push_back(Vertex(0.00f, -0.45f));
-    stash.push_back(Vertex(-0.10f, -0.20f));
-    stash.push_back(Vertex(-0.20f, -0.45f));
-    stash.push_back(Vertex(-0.30f, -0.20f));
-    stash.push_back(Vertex(-0.40f, -0.45f));
+    stash1.push_back(Vertex(0.20f, -0.45f));
+    stash1.push_back(Vertex(0.10f, 0.20f));
+    stash1.push_back(Vertex(0.00f, -0.45f));
+    stash2.push_back(Vertex(0.00f, -0.45f));
+    stash2.push_back(Vertex(-0.10f, -0.20f));
+    stash2.push_back(Vertex(-0.20f, -0.45f));
+    stash3.push_back(Vertex(-0.20f, -0.45f));
+    stash3.push_back(Vertex(-0.30f, 0.20f));
+    stash3.push_back(Vertex(-0.40f, -0.45f));
     draw_curve(stash, 30);
+    draw_curve(stash1, 20);
+    draw_curve(stash2, 20);
+    draw_curve(stash3, 20);
     
     glutSwapBuffers();
 }
