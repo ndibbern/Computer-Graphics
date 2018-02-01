@@ -186,6 +186,61 @@ void display() {
     ear_left_interior.push_back(Vertex(-0.4323f + delta,  0.0453f));
     draw_curve(ear_left_interior, 30);
     
+    // Right mouth side
+    vector<Vertex> mouth_right;
+    GLfloat delta_mouth = 0.12f;
+    mouth_right.push_back(Vertex(0.0107f, -0.3903f + delta_mouth));
+    mouth_right.push_back(Vertex(0.0475,  -0.3903f + delta_mouth));
+    mouth_right.push_back(Vertex(0.0884,  -0.3821f + delta_mouth));
+    mouth_right.push_back(Vertex(0.1211f, -0.3658f + delta_mouth));
+    mouth_right.push_back(Vertex(0.1681f, -0.3515f + delta_mouth));
+    mouth_right.push_back(Vertex(0.1946f, -0.3372f + delta_mouth));
+    mouth_right.push_back(Vertex(0.2253f, -0.3167f + delta_mouth));
+    mouth_right.push_back(Vertex(0.2519f, -0.2902f + delta_mouth));
+    mouth_right.push_back(Vertex(0.2743f, -0.2656f + delta_mouth));
+    mouth_right.push_back(Vertex(0.2927f, -0.2452f + delta_mouth));
+    mouth_right.push_back(Vertex(0.2911f, -0.2146f + delta_mouth));
+    mouth_right.push_back(Vertex(0.2975f, -0.1839f + delta_mouth));
+    mouth_right.push_back(Vertex(0.2918f, -0.1492f + delta_mouth));
+    mouth_right.push_back(Vertex(0.2959f, -0.1206f + delta_mouth));
+    mouth_right.push_back(Vertex(0.2920f, -0.0960f + delta_mouth));
+    mouth_right.push_back(Vertex(0.2961f, -0.0899f + delta_mouth));
+    draw_curve(mouth_right, 30);
+    
+    // Left mouth side
+    vector<Vertex> mouth_left;
+    mouth_left.push_back(Vertex(0.0107f, -0.3903f + delta_mouth));
+    mouth_left.push_back(Vertex(-0.0475,  -0.3903f + delta_mouth));
+    mouth_left.push_back(Vertex(-0.0884,  -0.3821f + delta_mouth));
+    mouth_left.push_back(Vertex(-0.1211f, -0.3658f + delta_mouth));
+    mouth_left.push_back(Vertex(-0.1681f, -0.3515f + delta_mouth));
+    mouth_left.push_back(Vertex(-0.1946f, -0.3372f + delta_mouth));
+    mouth_left.push_back(Vertex(-0.2253f, -0.3167f + delta_mouth));
+    mouth_left.push_back(Vertex(-0.2519f, -0.2902f + delta_mouth));
+    mouth_left.push_back(Vertex(-0.2743f, -0.2656f + delta_mouth));
+    mouth_left.push_back(Vertex(-0.2927f, -0.2452f + delta_mouth));
+    mouth_left.push_back(Vertex(-0.2911f, -0.2146f + delta_mouth));
+    mouth_left.push_back(Vertex(-0.2975f, -0.1839f + delta_mouth));
+    mouth_left.push_back(Vertex(-0.2918f, -0.1492f + delta_mouth));
+    mouth_left.push_back(Vertex(-0.2959f, -0.1206f + delta_mouth));
+    mouth_left.push_back(Vertex(-0.2920f, -0.0960f + delta_mouth));
+    mouth_left.push_back(Vertex(-0.2961f, -0.0899f + delta_mouth));
+    draw_curve(mouth_left, 30);
+
+    // cheek right
+    vector<Vertex> right_cheek;
+    GLfloat deltaX_cheek = -0.075f;
+    GLfloat deltaY_cheek = 0.144f;
+
+    right_cheek.push_back(Vertex(0.3587f + deltaX_cheek, -0.0641f + deltaY_cheek));
+    right_cheek.push_back(Vertex(0.3764f + deltaX_cheek, -0.0818f + deltaY_cheek));
+    right_cheek.push_back(Vertex(0.3875f + deltaX_cheek, -0.0995f + deltaY_cheek));
+    right_cheek.push_back(Vertex(0.3919f + deltaX_cheek, -0.1172f + deltaY_cheek));
+    right_cheek.push_back(Vertex(0.3919f + deltaX_cheek, -0.1393f + deltaY_cheek));
+    right_cheek.push_back(Vertex(0.3919f + deltaX_cheek, -0.1570f + deltaY_cheek));
+    draw_curve(right_cheek, 30);
+
+
     glutSwapBuffers();
 }
 int main(int argc, char *argv[]) {
