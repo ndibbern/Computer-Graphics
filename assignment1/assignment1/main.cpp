@@ -103,7 +103,7 @@ void display() {
     face_right.push_back(Vertex(0.3797f, -0.0547f));
     draw_curve(face_right, 30);
     
-    
+    // face left
     vector<Vertex> face_left;
     face_left.push_back(Vertex(-0.0064f, -0.4886f));
     face_left.push_back(Vertex(-0.0209, -0.4903f));
@@ -128,6 +128,36 @@ void display() {
     face_left.push_back(Vertex(-0.3865f, -0.0717f));
     face_left.push_back(Vertex(-0.3797f, -0.0547f));
     draw_curve(face_left, 30);
+    
+    // ear right
+    vector<Vertex> ear_right;
+    ear_right.push_back(Vertex(0.3797f, -0.0547f));
+    ear_right.push_back(Vertex(0.4075f, -0.0600f));
+    ear_right.push_back(Vertex(0.4257f, -0.0836f));
+    ear_right.push_back(Vertex(0.4529f, -0.0872f));
+    ear_right.push_back(Vertex(0.4802f, -0.0636f));
+    ear_right.push_back(Vertex(0.5002f, -0.0309f));
+    ear_right.push_back(Vertex(0.4929f,  0.0327f));
+    ear_right.push_back(Vertex(0.4675f,  0.0781f));
+    ear_right.push_back(Vertex(0.4330f,  0.0890f));
+    ear_right.push_back(Vertex(0.4093f,  0.0818f));
+    ear_right.push_back(Vertex(0.3912f,  0.0654f));
+    draw_curve(ear_right, 30);
+    
+    // ear left
+    vector<Vertex> ear_left;
+    ear_left.push_back(Vertex(-0.3797f, -0.0547f));
+    ear_left.push_back(Vertex(-0.4075f, -0.0600f));
+    ear_left.push_back(Vertex(-0.4257f, -0.0836f));
+    ear_left.push_back(Vertex(-0.4529f, -0.0872f));
+    ear_left.push_back(Vertex(-0.4802f, -0.0636f));
+    ear_left.push_back(Vertex(-0.5002f, -0.0309f));
+    ear_left.push_back(Vertex(-0.4929f,  0.0327f));
+    ear_left.push_back(Vertex(-0.4675f,  0.0781f));
+    ear_left.push_back(Vertex(-0.4330f,  0.0890f));
+    ear_left.push_back(Vertex(-0.4093f,  0.0818f));
+    ear_left.push_back(Vertex(-0.3912f,  0.0654f));
+    draw_curve(ear_left, 30);
     
     glutSwapBuffers();
 }
