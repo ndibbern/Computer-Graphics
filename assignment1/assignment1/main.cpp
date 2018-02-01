@@ -231,7 +231,6 @@ void display() {
     vector<Vertex> right_cheek;
     GLfloat deltaX_cheek = -0.075f;
     GLfloat deltaY_cheek = 0.144f;
-
     right_cheek.push_back(Vertex(0.3587f + deltaX_cheek, -0.0641f + deltaY_cheek));
     right_cheek.push_back(Vertex(0.3764f + deltaX_cheek, -0.0818f + deltaY_cheek));
     right_cheek.push_back(Vertex(0.3875f + deltaX_cheek, -0.0995f + deltaY_cheek));
@@ -239,6 +238,16 @@ void display() {
     right_cheek.push_back(Vertex(0.3919f + deltaX_cheek, -0.1393f + deltaY_cheek));
     right_cheek.push_back(Vertex(0.3919f + deltaX_cheek, -0.1570f + deltaY_cheek));
     draw_curve(right_cheek, 30);
+    
+    // cheek left
+    vector<Vertex> left_cheek;
+    left_cheek.push_back(Vertex(-0.3587f - deltaX_cheek, -0.0641f + deltaY_cheek));
+    left_cheek.push_back(Vertex(-0.3764f - deltaX_cheek, -0.0818f + deltaY_cheek));
+    left_cheek.push_back(Vertex(-0.3875f - deltaX_cheek, -0.0995f + deltaY_cheek));
+    left_cheek.push_back(Vertex(-0.3919f - deltaX_cheek, -0.1172f + deltaY_cheek));
+    left_cheek.push_back(Vertex(-0.3919f - deltaX_cheek, -0.1393f + deltaY_cheek));
+    left_cheek.push_back(Vertex(-0.3919f - deltaX_cheek, -0.1570f + deltaY_cheek));
+    draw_curve(left_cheek, 30);
 
 
     glutSwapBuffers();
