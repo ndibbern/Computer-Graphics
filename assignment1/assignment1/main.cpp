@@ -72,10 +72,8 @@ void draw_curve(vector<Vertex> control_points, int n_iter) {
     }
 }
 
-void display() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    // Set our color to black (R, G, B)
-    glColor3f(0.0f, 0.0f, 0.0f);
+vector<vector<Vertex>> init_sketch() {
+    vector<vector<Vertex>> sketch_points;
     
     // Right face side
     vector<Vertex> face_right;
@@ -101,7 +99,8 @@ void display() {
     face_right.push_back(Vertex(0.3865f, -0.2084f));
     face_right.push_back(Vertex(0.3865f, -0.0717f));
     face_right.push_back(Vertex(0.3797f, -0.0547f));
-    draw_curve(face_right, 30);
+    
+    sketch_points.push_back(face_right);
     
     // face left
     vector<Vertex> face_left;
@@ -127,8 +126,9 @@ void display() {
     face_left.push_back(Vertex(-0.3865f, -0.2084f));
     face_left.push_back(Vertex(-0.3865f, -0.0717f));
     face_left.push_back(Vertex(-0.3797f, -0.0547f));
-    draw_curve(face_left, 30);
     
+    sketch_points.push_back(face_left);
+
     // ear right
     vector<Vertex> ear_right;
     ear_right.push_back(Vertex(0.3797f, -0.0547f));
@@ -142,8 +142,9 @@ void display() {
     ear_right.push_back(Vertex(0.4330f,  0.0890f));
     ear_right.push_back(Vertex(0.4093f,  0.0818f));
     ear_right.push_back(Vertex(0.3912f,  0.0654f));
-    draw_curve(ear_right, 30);
     
+    sketch_points.push_back(ear_right);
+
     // ear right interior
     GLfloat delta = 0.04f;
     vector<Vertex> ear_right_interior;
@@ -156,8 +157,9 @@ void display() {
     ear_right_interior.push_back(Vertex(0.4700f - delta,  0.0453f));
     ear_right_interior.push_back(Vertex(0.4493f - delta,  0.0566f));
     ear_right_interior.push_back(Vertex(0.4323f - delta,  0.0453f));
-    draw_curve(ear_right_interior, 30);
     
+    sketch_points.push_back(ear_right_interior);
+
     // ear left
     vector<Vertex> ear_left;
     ear_left.push_back(Vertex(-0.3797f, -0.0547f));
@@ -171,8 +173,9 @@ void display() {
     ear_left.push_back(Vertex(-0.4330f,  0.0890f));
     ear_left.push_back(Vertex(-0.4093f,  0.0818f));
     ear_left.push_back(Vertex(-0.3912f,  0.0654f));
-    draw_curve(ear_left, 30);
     
+    sketch_points.push_back(ear_left);
+
     // ear left interior
     vector<Vertex> ear_left_interior;
     ear_left_interior.push_back(Vertex(-0.4436f + delta, -0.0302f));
@@ -184,8 +187,9 @@ void display() {
     ear_left_interior.push_back(Vertex(-0.4700f + delta,  0.0453f));
     ear_left_interior.push_back(Vertex(-0.4493f + delta,  0.0566f));
     ear_left_interior.push_back(Vertex(-0.4323f + delta,  0.0453f));
-    draw_curve(ear_left_interior, 30);
     
+    sketch_points.push_back(ear_left_interior);
+
     // Right mouth side
     vector<Vertex> mouth_right;
     GLfloat delta_mouth = 0.12f;
@@ -205,8 +209,9 @@ void display() {
     mouth_right.push_back(Vertex(0.2959f, -0.1206f + delta_mouth));
     mouth_right.push_back(Vertex(0.2920f, -0.0960f + delta_mouth));
     mouth_right.push_back(Vertex(0.2961f, -0.0899f + delta_mouth));
-    draw_curve(mouth_right, 30);
     
+    sketch_points.push_back(mouth_right);
+
     // Left mouth side
     vector<Vertex> mouth_left;
     mouth_left.push_back(Vertex(0.0107f, -0.3903f + delta_mouth));
@@ -225,7 +230,8 @@ void display() {
     mouth_left.push_back(Vertex(-0.2959f, -0.1206f + delta_mouth));
     mouth_left.push_back(Vertex(-0.2920f, -0.0960f + delta_mouth));
     mouth_left.push_back(Vertex(-0.2961f, -0.0899f + delta_mouth));
-    draw_curve(mouth_left, 30);
+   
+    sketch_points.push_back(mouth_left);
 
     // cheek right
     vector<Vertex> right_cheek;
@@ -237,8 +243,9 @@ void display() {
     right_cheek.push_back(Vertex(0.3919f + deltaX_cheek, -0.1172f + deltaY_cheek));
     right_cheek.push_back(Vertex(0.3919f + deltaX_cheek, -0.1393f + deltaY_cheek));
     right_cheek.push_back(Vertex(0.3919f + deltaX_cheek, -0.1570f + deltaY_cheek));
-    draw_curve(right_cheek, 30);
     
+    sketch_points.push_back(right_cheek);
+
     // cheek left
     vector<Vertex> left_cheek;
     left_cheek.push_back(Vertex(-0.3587f - deltaX_cheek, -0.0641f + deltaY_cheek));
@@ -247,7 +254,8 @@ void display() {
     left_cheek.push_back(Vertex(-0.3919f - deltaX_cheek, -0.1172f + deltaY_cheek));
     left_cheek.push_back(Vertex(-0.3919f - deltaX_cheek, -0.1393f + deltaY_cheek));
     left_cheek.push_back(Vertex(-0.3919f - deltaX_cheek, -0.1570f + deltaY_cheek));
-    draw_curve(left_cheek, 30);
+    
+    sketch_points.push_back(left_cheek);
 
     // right eye top
     vector<Vertex> right_eye_top;
@@ -256,8 +264,9 @@ void display() {
     right_eye_top.push_back(Vertex(0.0995f, 0.2128f));
     right_eye_top.push_back(Vertex(0.1501f, 0.2128f));
     right_eye_top.push_back(Vertex(0.1409f, 0.1603f));
-    draw_curve(right_eye_top, 30);
     
+    sketch_points.push_back(right_eye_top);
+
     // right eye bottom
     GLfloat deltaY_eye = 0.28f;
     GLfloat deltaX_eye = 0.255f;
@@ -269,8 +278,9 @@ void display() {
     right_eye_bottom.push_back(Vertex(-0.1501f + deltaX_eye, -0.2128f + deltaY_eye));
     right_eye_bottom.push_back(Vertex(-0.1409f + deltaX_eye, -0.1603f + deltaY_eye));
     right_eye_bottom.push_back(Vertex(0.1119f, 0.1480f));
-    draw_curve(right_eye_bottom, 30);
     
+    sketch_points.push_back(right_eye_bottom);
+
     // left eye top
     vector<Vertex> left_eye_top;
     left_eye_top.push_back(Vertex(-0.1119f, 0.1480f));
@@ -278,8 +288,9 @@ void display() {
     left_eye_top.push_back(Vertex(-0.0995f, 0.2128f));
     left_eye_top.push_back(Vertex(-0.1501f, 0.2128f));
     left_eye_top.push_back(Vertex(-0.1409f, 0.1603f));
-    draw_curve(left_eye_top, 30);
     
+    sketch_points.push_back(left_eye_top);
+
     // left eye bottom
     vector<Vertex> left_eye_bottom;
     left_eye_bottom.push_back(Vertex(-0.1409f, 0.1603f));
@@ -289,8 +300,9 @@ void display() {
     left_eye_bottom.push_back(Vertex(0.1501f - deltaX_eye, -0.2128f + deltaY_eye));
     left_eye_bottom.push_back(Vertex(0.1409f - deltaX_eye, -0.1603f + deltaY_eye));
     left_eye_bottom.push_back(Vertex(-0.1119f, 0.1480f));
-    draw_curve(left_eye_bottom, 30);
     
+    sketch_points.push_back(left_eye_bottom);
+
     //  hair right
     vector<Vertex> hair_right;
     hair_right.push_back(Vertex(0.3912f, 0.0654f));
@@ -319,8 +331,9 @@ void display() {
     hair_right.push_back(Vertex(-0.2912f, 0.5483));
     hair_right.push_back(Vertex(-0.3125f, 0.4569f));
     hair_right.push_back(Vertex(-0.3164f, 0.4453f));
-    draw_curve(hair_right, 40);
-   
+    
+    sketch_points.push_back(hair_right);
+
     //hair right down
     vector<Vertex> hair_right_down;
     GLfloat deltaX_r_hair = -0.00f;
@@ -334,8 +347,9 @@ void display() {
     hair_right_down.push_back(Vertex(0.3913f + deltaX_r_hair, 0.2056f + deltaY_r_hair));
     hair_right_down.push_back(Vertex(0.3791f + deltaX_r_hair, 0.2443f + deltaY_r_hair));
     hair_right_down.push_back(Vertex(0.3608f + deltaX_r_hair, 0.2626f + deltaY_r_hair));
-    draw_curve(hair_right_down, 30);
     
+    sketch_points.push_back(hair_right_down);
+
     //hair right down
     vector<Vertex> hair_left_down;
     GLfloat deltaX_l_hair = -0.00f;
@@ -354,8 +368,9 @@ void display() {
     hair_left_down.push_back(Vertex(-0.3355f + deltaX_l_hair, 0.4579f + deltaY_l_hair));
     hair_left_down.push_back(Vertex(-0.3626f + deltaX_l_hair, 0.4940f + deltaY_l_hair));
     hair_left_down.push_back(Vertex(-0.3164f, 0.4453f));
-    draw_curve(hair_left_down, 50);
-    
+   
+    sketch_points.push_back(hair_left_down);
+
     //  hair left
     vector<Vertex> hair_left;
     GLfloat deltaX_left = 0.52f;
@@ -366,30 +381,47 @@ void display() {
     hair_left.push_back(Vertex(-0.9526f + deltaX_left, 0.8247f + deltaY_left));
     hair_left.push_back(Vertex(-1.0106f + deltaX_left, 0.7842f + deltaY_left));
     hair_left.push_back(Vertex(-0.3912f, 0.0654f));
-    draw_curve(hair_left, 30);
     
+    sketch_points.push_back(hair_left);
+
     //  hair left symmetry
     vector<Vertex> hair_left_symmetry;
     hair_left_symmetry.push_back(Vertex(-0.3164f, 0.4453f));
     hair_left_symmetry.push_back(Vertex(-0.2164f, 0.4453f - 0.4f));
     hair_left_symmetry.push_back(Vertex(-0.3912f, 0.0654f));
-    draw_curve(hair_left_symmetry, 30);
     
+    sketch_points.push_back(hair_left_symmetry);
+
     //  eyebrow_right
     GLfloat deltaY_eyebrow = -0.04f;
     vector<Vertex> eyebrow_right;
     eyebrow_right.push_back(Vertex(0.1918f, 0.2233f + deltaY_eyebrow));
     eyebrow_right.push_back(Vertex(0.1359f, 0.4568f + deltaY_eyebrow));
     eyebrow_right.push_back(Vertex(0.0683f, 0.2498f + deltaY_eyebrow));
-    draw_curve(eyebrow_right, 30);
     
+    sketch_points.push_back(eyebrow_right);
+
     // eyebrow left
     vector<Vertex> eyebrow_left;
     eyebrow_left.push_back(Vertex(-0.1918f, 0.2233f + deltaY_eyebrow));
     eyebrow_left.push_back(Vertex(-0.1359f, 0.4568f + deltaY_eyebrow));
     eyebrow_left.push_back(Vertex(-0.0683f, 0.2498f + deltaY_eyebrow));
-    draw_curve(eyebrow_left, 30);
     
+    sketch_points.push_back(eyebrow_left);
+    
+    return sketch_points;
+}
+
+void display() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // Set our color to black (R, G, B)
+    glColor3f(0.0f, 0.0f, 0.0f);
+    vector<vector<Vertex>> initial_points = init_sketch();
+    
+    for (int i = 0; i < initial_points.size(); i++) {
+        vector<Vertex> points_i = initial_points[i];
+        draw_curve(points_i, 30);
+    }
     glutSwapBuffers();
 }
 int main(int argc, char *argv[]) {
