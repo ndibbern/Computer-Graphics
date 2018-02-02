@@ -262,6 +262,7 @@ void display() {
     
     //  hair right
     vector<Vertex> hair_right;
+    hair_right.push_back(Vertex(0.3912f,  0.0654f));
     hair_right.push_back(Vertex(0.4224f, 0.0739f));
     hair_right.push_back(Vertex(0.4438f, 0.1050f));
     hair_right.push_back(Vertex(0.4574f, 0.1517f));
@@ -293,7 +294,8 @@ void display() {
     vector<Vertex> hair_right_down;
     GLfloat deltaX_r_hair = -0.00f;
     GLfloat deltaY_r_hair = -0.00f;
-    hair_right_down.push_back(Vertex(0.4224f, 0.0739f));
+    hair_right_down.push_back(Vertex(0.3912f,  0.0654f));
+    //hair_right_down.push_back(Vertex(0.4224f, 0.0739f));
     hair_right_down.push_back(Vertex(0.4402f + deltaX_r_hair, 0.0875f + deltaY_r_hair));
     hair_right_down.push_back(Vertex(0.4259f + deltaX_r_hair, 0.1058f + deltaY_r_hair));
     hair_right_down.push_back(Vertex(0.4574f + deltaX_r_hair, 0.1343f + deltaY_r_hair));
@@ -325,21 +327,23 @@ void display() {
     
     //  hair left
     vector<Vertex> hair_left;
-    hair_left.push_back(Vertex(-0.6215f, 0.8206f));
-    hair_left.push_back(Vertex(-0.6619f, 0.8449f));
-    hair_left.push_back(Vertex(-0.7104f, 0.8449f));
-    hair_left.push_back(Vertex(-0.7509f, 0.8247f));
-    hair_left.push_back(Vertex(-0.7913f, 0.7842f));
-    hair_left.push_back(Vertex(-0.8358f, 0.7357f));
-    hair_left.push_back(Vertex(-0.8681f, 0.6791f));
-    hair_left.push_back(Vertex(-0.9004f, 0.6225f));
-    hair_left.push_back(Vertex(-0.9166f, 0.5700f));
-    hair_left.push_back(Vertex(-0.9368f, 0.5013f));
-    hair_left.push_back(Vertex(-0.9449f, 0.4326f));
-    hair_left.push_back(Vertex(-0.9530f, 0.3679f));
-    hair_left.push_back(Vertex(-0.9490f, 0.2870f));
-    hair_left.push_back(Vertex(-0.9207f, 0.2385f));
+    GLfloat deltaX_left = 0.52f;
+    GLfloat deltaY_left = -0.40f;
+    hair_left.push_back(Vertex(-0.3164f, 0.4453f));
+    hair_left.push_back(Vertex(-0.7922f + deltaX_left, 0.8449f + deltaY_left));
+    hair_left.push_back(Vertex(-0.8724f + deltaX_left, 0.8449f + deltaY_left));
+    hair_left.push_back(Vertex(-0.9526f + deltaX_left, 0.8247f + deltaY_left));
+    hair_left.push_back(Vertex(-1.0106f + deltaX_left, 0.7842f + deltaY_left));
+    hair_left.push_back(Vertex(-0.3912f, 0.0654f));
     draw_curve(hair_left, 30);
+    
+    //  hair left symmetry
+    vector<Vertex> hair_left_symmetry;
+    hair_left_symmetry.push_back(Vertex(-0.3164f, 0.4453f));
+    hair_left_symmetry.push_back(Vertex(-0.2164f , 0.4453f - 0.4f));
+    hair_left_symmetry.push_back(Vertex(-0.3912f, 0.0654f));
+    draw_curve(hair_left_symmetry, 30);
+    
     glutSwapBuffers();
 }
 int main(int argc, char *argv[]) {
