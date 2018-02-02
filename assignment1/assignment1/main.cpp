@@ -64,12 +64,12 @@ void draw_curve(vector<Vertex> control_points, int n_iter) {
     vector<Vertex> final_points = previous;
     
     for (long i = final_points.size()-2; i >= 0; i--) {
+        glLineWidth(4.0f);
         glBegin(GL_LINES);
         glVertex2f(final_points[i+1].get_x(), final_points[i+1].get_y());
         glVertex2f(final_points[i].get_x(), final_points[i].get_y());
         glEnd();
     }
-    
 }
 
 void display() {
@@ -371,9 +371,24 @@ void display() {
     //  hair left symmetry
     vector<Vertex> hair_left_symmetry;
     hair_left_symmetry.push_back(Vertex(-0.3164f, 0.4453f));
-    hair_left_symmetry.push_back(Vertex(-0.2164f , 0.4453f - 0.4f));
+    hair_left_symmetry.push_back(Vertex(-0.2164f, 0.4453f - 0.4f));
     hair_left_symmetry.push_back(Vertex(-0.3912f, 0.0654f));
     draw_curve(hair_left_symmetry, 30);
+    
+    //  eyebrow_right
+    GLfloat deltaY_eyebrow = -0.04f;
+    vector<Vertex> eyebrow_right;
+    eyebrow_right.push_back(Vertex(0.1918f, 0.2233f + deltaY_eyebrow));
+    eyebrow_right.push_back(Vertex(0.1359f, 0.4568f + deltaY_eyebrow));
+    eyebrow_right.push_back(Vertex(0.0683f, 0.2498f + deltaY_eyebrow));
+    draw_curve(eyebrow_right, 30);
+    
+    // eyebrow left
+    vector<Vertex> eyebrow_left;
+    eyebrow_left.push_back(Vertex(-0.1918f, 0.2233f + deltaY_eyebrow));
+    eyebrow_left.push_back(Vertex(-0.1359f, 0.4568f + deltaY_eyebrow));
+    eyebrow_left.push_back(Vertex(-0.0683f, 0.2498f + deltaY_eyebrow));
+    draw_curve(eyebrow_left, 30);
     
     glutSwapBuffers();
 }
