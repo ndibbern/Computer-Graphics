@@ -6,25 +6,19 @@
  ** Note: although the assignment should be completed individually
  you may speak with classmates on high level algorithmic concepts. Please
  list their names in this section
- Project Summary:
- In this project I took two approaches: the iterative version and the generalized iterative version of Bezier Algorithm.
- The first algorithm iterates through the control points finiding the midpoints between those points and repeating this process an
- n_iter number of times. The generalized bezier instead makes use of the formal generalized equation from Bezier's algorithm which is
- basically a binomial expansion. I reproduced this code by writing an n choose i function (to generate pascal triangle values) and then
- using this function in my B function, which generates the bezier point for a given t and a set of control points. The generate_points function
- then takes the initial given control points and calles the B function for values in the range [0,1] with dt being a parameter given to the function.
- This now will give us a good approximation of the curve. Finally the draw curve function calles the generate_points function giving it the values
- of the control points and the value for dt. The generate_points will now return the list of new values and then we are all good to plot it.
- The iterative method works really similar, but it is less precise since it just is a special case of the generalized Bezier.
+ Project Summary: A short paragraph (3-4 sentences) describing the work you
+ did for the project: e.g. did you use the iterative or recursive approach?
  ***/
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 #include <GLUT/glut.h>
+#include <cmath>
 #else
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
+#include <cmath>
 #endif
 #include <vector>
 #include <iostream>
@@ -36,53 +30,57 @@ public:
     GLfloat get_y() { return y; };
     GLfloat get_x() { return x; };
 };
-Vertex::Vertex(GLfloat X, GLfloat Y) {
+Vertex::Vertex(GLfloat X, GLfloat Y){
     x = X;
     y = Y; }
 void setup() {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
+int binomial_coeff(int n, int k){
+    if (k==0 || k==n)
+        return 1;
+    return  binomial_coeff(n-1, k-1) + binomial_coeff(n-1, k);
+}
 
-vector<Vertex> generate_points(vector<Vertex> control_points) {
-    vector<Vertex> points;
-    points.push_back(control_points[0]);
-    for (int m = 0; m < control_points.size() - 1; m++) {
-        //step through points
-        //take mid points
-        Vertex v_0 = control_points[m];
-        Vertex v_1 = control_points[m+1];
-        // First point at the 1/2 position along the line from v_0 and v_1
-        GLfloat y = (0.5)*v_0.get_y()+(0.5)*v_1.get_y();
-        GLfloat x = (0.5)*v_0.get_x()+(0.5)*v_1.get_x();
-        points.push_back(Vertex(x, y));
+Vertex B(vector<Vertex> control_points, float t) {
+    float x = 0.0;
+    float y = 0.0;
+    int n = (int) control_points.size() - 1;
+
+    for (int i = 0; i <= n; i++) {
+        x += binomial_coeff(n, i) * pow(1-t, n-i) * pow(t, i) * control_points[i].get_x();
+        y += binomial_coeff(n, i) * pow(1-t, n-i) * pow(t, i) * control_points[i].get_y();
     }
-    points.push_back(control_points[control_points.size()-1]);
+    return Vertex(x, y);
+}
+
+vector<Vertex> generate_points(vector<Vertex> control_points, float dt) {
+    vector<Vertex> points;
+    for (float t = 0; t <= 1; t += dt){
+        Vertex new_point = B(control_points, t);
+        points.push_back(new_point);
+    }
+    Vertex new_point = B(control_points, 1);
+    points.push_back(new_point);
     return points;
 }
 
-void draw_curve(vector<Vertex> control_points, int n_iter) {
+void draw_curve(vector<Vertex> control_points, float dt) {
     // Draw a Bezier curve based on the given control points
-    
-    vector<Vertex> previous = control_points;
-    for (int i = 0; i <= n_iter; i++) {
-        vector<Vertex> new_points = generate_points(previous);
-        previous = new_points;
-    }
-    vector<Vertex> final_points = previous;
-    
-    for (long i = final_points.size()-2; i >= 0; i--) {
-        glLineWidth(4.0f);
+    vector<Vertex> final_points = generate_points(control_points, dt);
+    for (int i = 0; i < final_points.size() - 1; ++i) {
+        glLineWidth(3.0f);
         glBegin(GL_LINES);
-        glVertex2f(final_points[i+1].get_x(), final_points[i+1].get_y());
         glVertex2f(final_points[i].get_x(), final_points[i].get_y());
+        glVertex2f(final_points[i+1].get_x(), final_points[i+1].get_y());
         glEnd();
     }
 }
 
 vector<vector<Vertex>> init_sketch() {
     vector<vector<Vertex>> sketch_points;
-    
+
     // Right face side
     vector<Vertex> face_right;
     face_right.push_back(Vertex(-0.0064f, -0.4886f));
@@ -107,9 +105,9 @@ vector<vector<Vertex>> init_sketch() {
     face_right.push_back(Vertex(0.3865f, -0.2084f));
     face_right.push_back(Vertex(0.3865f, -0.0717f));
     face_right.push_back(Vertex(0.3797f, -0.0547f));
-    
+
     sketch_points.push_back(face_right);
-    
+
     // face left
     vector<Vertex> face_left;
     face_left.push_back(Vertex(-0.0064f, -0.4886f));
@@ -134,9 +132,9 @@ vector<vector<Vertex>> init_sketch() {
     face_left.push_back(Vertex(-0.3865f, -0.2084f));
     face_left.push_back(Vertex(-0.3865f, -0.0717f));
     face_left.push_back(Vertex(-0.3797f, -0.0547f));
-    
+
     sketch_points.push_back(face_left);
-    
+
     // ear right
     vector<Vertex> ear_right;
     ear_right.push_back(Vertex(0.3797f, -0.0547f));
@@ -150,9 +148,9 @@ vector<vector<Vertex>> init_sketch() {
     ear_right.push_back(Vertex(0.4330f,  0.0890f));
     ear_right.push_back(Vertex(0.4093f,  0.0818f));
     ear_right.push_back(Vertex(0.3912f,  0.0654f));
-    
+
     sketch_points.push_back(ear_right);
-    
+
     // ear right interior
     GLfloat delta = 0.04f;
     vector<Vertex> ear_right_interior;
@@ -165,9 +163,9 @@ vector<vector<Vertex>> init_sketch() {
     ear_right_interior.push_back(Vertex(0.4700f - delta,  0.0453f));
     ear_right_interior.push_back(Vertex(0.4493f - delta,  0.0566f));
     ear_right_interior.push_back(Vertex(0.4323f - delta,  0.0453f));
-    
+
     sketch_points.push_back(ear_right_interior);
-    
+
     // ear left
     vector<Vertex> ear_left;
     ear_left.push_back(Vertex(-0.3797f, -0.0547f));
@@ -181,9 +179,9 @@ vector<vector<Vertex>> init_sketch() {
     ear_left.push_back(Vertex(-0.4330f,  0.0890f));
     ear_left.push_back(Vertex(-0.4093f,  0.0818f));
     ear_left.push_back(Vertex(-0.3912f,  0.0654f));
-    
+
     sketch_points.push_back(ear_left);
-    
+
     // ear left interior
     vector<Vertex> ear_left_interior;
     ear_left_interior.push_back(Vertex(-0.4436f + delta, -0.0302f));
@@ -195,9 +193,9 @@ vector<vector<Vertex>> init_sketch() {
     ear_left_interior.push_back(Vertex(-0.4700f + delta,  0.0453f));
     ear_left_interior.push_back(Vertex(-0.4493f + delta,  0.0566f));
     ear_left_interior.push_back(Vertex(-0.4323f + delta,  0.0453f));
-    
+
     sketch_points.push_back(ear_left_interior);
-    
+
     // Right mouth side
     vector<Vertex> mouth_right;
     GLfloat delta_mouth = 0.12f;
@@ -217,9 +215,9 @@ vector<vector<Vertex>> init_sketch() {
     mouth_right.push_back(Vertex(0.2959f, -0.1206f + delta_mouth));
     mouth_right.push_back(Vertex(0.2920f, -0.0960f + delta_mouth));
     mouth_right.push_back(Vertex(0.2961f, -0.0899f + delta_mouth));
-    
+
     sketch_points.push_back(mouth_right);
-    
+
     // Left mouth side
     vector<Vertex> mouth_left;
     mouth_left.push_back(Vertex(0.0107f, -0.3903f + delta_mouth));
@@ -238,9 +236,9 @@ vector<vector<Vertex>> init_sketch() {
     mouth_left.push_back(Vertex(-0.2959f, -0.1206f + delta_mouth));
     mouth_left.push_back(Vertex(-0.2920f, -0.0960f + delta_mouth));
     mouth_left.push_back(Vertex(-0.2961f, -0.0899f + delta_mouth));
-    
+
     sketch_points.push_back(mouth_left);
-    
+
     // cheek right
     vector<Vertex> right_cheek;
     GLfloat deltaX_cheek = -0.075f;
@@ -251,9 +249,9 @@ vector<vector<Vertex>> init_sketch() {
     right_cheek.push_back(Vertex(0.3919f + deltaX_cheek, -0.1172f + deltaY_cheek));
     right_cheek.push_back(Vertex(0.3919f + deltaX_cheek, -0.1393f + deltaY_cheek));
     right_cheek.push_back(Vertex(0.3919f + deltaX_cheek, -0.1570f + deltaY_cheek));
-    
+
     sketch_points.push_back(right_cheek);
-    
+
     // cheek left
     vector<Vertex> left_cheek;
     left_cheek.push_back(Vertex(-0.3587f - deltaX_cheek, -0.0641f + deltaY_cheek));
@@ -262,9 +260,9 @@ vector<vector<Vertex>> init_sketch() {
     left_cheek.push_back(Vertex(-0.3919f - deltaX_cheek, -0.1172f + deltaY_cheek));
     left_cheek.push_back(Vertex(-0.3919f - deltaX_cheek, -0.1393f + deltaY_cheek));
     left_cheek.push_back(Vertex(-0.3919f - deltaX_cheek, -0.1570f + deltaY_cheek));
-    
+
     sketch_points.push_back(left_cheek);
-    
+
     // right eye top
     vector<Vertex> right_eye_top;
     right_eye_top.push_back(Vertex(0.1119f, 0.1480f));
@@ -272,9 +270,9 @@ vector<vector<Vertex>> init_sketch() {
     right_eye_top.push_back(Vertex(0.0995f, 0.2128f));
     right_eye_top.push_back(Vertex(0.1501f, 0.2128f));
     right_eye_top.push_back(Vertex(0.1409f, 0.1603f));
-    
+
     sketch_points.push_back(right_eye_top);
-    
+
     // right eye bottom
     GLfloat deltaY_eye = 0.28f;
     GLfloat deltaX_eye = 0.255f;
@@ -286,9 +284,9 @@ vector<vector<Vertex>> init_sketch() {
     right_eye_bottom.push_back(Vertex(-0.1501f + deltaX_eye, -0.2128f + deltaY_eye));
     right_eye_bottom.push_back(Vertex(-0.1409f + deltaX_eye, -0.1603f + deltaY_eye));
     right_eye_bottom.push_back(Vertex(0.1119f, 0.1480f));
-    
+
     sketch_points.push_back(right_eye_bottom);
-    
+
     // left eye top
     vector<Vertex> left_eye_top;
     left_eye_top.push_back(Vertex(-0.1119f, 0.1480f));
@@ -296,9 +294,9 @@ vector<vector<Vertex>> init_sketch() {
     left_eye_top.push_back(Vertex(-0.0995f, 0.2128f));
     left_eye_top.push_back(Vertex(-0.1501f, 0.2128f));
     left_eye_top.push_back(Vertex(-0.1409f, 0.1603f));
-    
+
     sketch_points.push_back(left_eye_top);
-    
+
     // left eye bottom
     vector<Vertex> left_eye_bottom;
     left_eye_bottom.push_back(Vertex(-0.1409f, 0.1603f));
@@ -308,9 +306,9 @@ vector<vector<Vertex>> init_sketch() {
     left_eye_bottom.push_back(Vertex(0.1501f - deltaX_eye, -0.2128f + deltaY_eye));
     left_eye_bottom.push_back(Vertex(0.1409f - deltaX_eye, -0.1603f + deltaY_eye));
     left_eye_bottom.push_back(Vertex(-0.1119f, 0.1480f));
-    
+
     sketch_points.push_back(left_eye_bottom);
-    
+
     //  hair right
     vector<Vertex> hair_right;
     hair_right.push_back(Vertex(0.3912f, 0.0654f));
@@ -339,9 +337,9 @@ vector<vector<Vertex>> init_sketch() {
     hair_right.push_back(Vertex(-0.2912f, 0.5483));
     hair_right.push_back(Vertex(-0.3125f, 0.4569f));
     hair_right.push_back(Vertex(-0.3164f, 0.4453f));
-    
+
     sketch_points.push_back(hair_right);
-    
+
     //hair right down
     vector<Vertex> hair_right_down;
     GLfloat deltaX_r_hair = -0.00f;
@@ -355,9 +353,9 @@ vector<vector<Vertex>> init_sketch() {
     hair_right_down.push_back(Vertex(0.3913f + deltaX_r_hair, 0.2056f + deltaY_r_hair));
     hair_right_down.push_back(Vertex(0.3791f + deltaX_r_hair, 0.2443f + deltaY_r_hair));
     hair_right_down.push_back(Vertex(0.3608f + deltaX_r_hair, 0.2626f + deltaY_r_hair));
-    
+
     sketch_points.push_back(hair_right_down);
-    
+
     //hair right down
     vector<Vertex> hair_left_down;
     GLfloat deltaX_l_hair = -0.00f;
@@ -376,9 +374,9 @@ vector<vector<Vertex>> init_sketch() {
     hair_left_down.push_back(Vertex(-0.3355f + deltaX_l_hair, 0.4579f + deltaY_l_hair));
     hair_left_down.push_back(Vertex(-0.3626f + deltaX_l_hair, 0.4940f + deltaY_l_hair));
     hair_left_down.push_back(Vertex(-0.3164f, 0.4453f));
-    
+
     sketch_points.push_back(hair_left_down);
-    
+
     //  hair left
     vector<Vertex> hair_left;
     GLfloat deltaX_left = 0.52f;
@@ -389,34 +387,34 @@ vector<vector<Vertex>> init_sketch() {
     hair_left.push_back(Vertex(-0.9526f + deltaX_left, 0.8247f + deltaY_left));
     hair_left.push_back(Vertex(-1.0106f + deltaX_left, 0.7842f + deltaY_left));
     hair_left.push_back(Vertex(-0.3912f, 0.0654f));
-    
+
     sketch_points.push_back(hair_left);
-    
+
     //  hair left symmetry
     vector<Vertex> hair_left_symmetry;
     hair_left_symmetry.push_back(Vertex(-0.3164f, 0.4453f));
     hair_left_symmetry.push_back(Vertex(-0.2164f, 0.4453f - 0.4f));
     hair_left_symmetry.push_back(Vertex(-0.3912f, 0.0654f));
-    
+
     sketch_points.push_back(hair_left_symmetry);
-    
+
     //  eyebrow_right
     GLfloat deltaY_eyebrow = -0.04f;
     vector<Vertex> eyebrow_right;
     eyebrow_right.push_back(Vertex(0.1918f, 0.2233f + deltaY_eyebrow));
     eyebrow_right.push_back(Vertex(0.1359f, 0.4568f + deltaY_eyebrow));
     eyebrow_right.push_back(Vertex(0.0683f, 0.2498f + deltaY_eyebrow));
-    
+
     sketch_points.push_back(eyebrow_right);
-    
+
     // eyebrow left
     vector<Vertex> eyebrow_left;
     eyebrow_left.push_back(Vertex(-0.1918f, 0.2233f + deltaY_eyebrow));
     eyebrow_left.push_back(Vertex(-0.1359f, 0.4568f + deltaY_eyebrow));
     eyebrow_left.push_back(Vertex(-0.0683f, 0.2498f + deltaY_eyebrow));
-    
+
     sketch_points.push_back(eyebrow_left);
-    
+
     return sketch_points;
 }
 
@@ -425,10 +423,10 @@ void display() {
     // Set our color to black (R, G, B)
     glColor3f(0.0f, 0.0f, 0.0f);
     vector<vector<Vertex>> initial_points = init_sketch();
-    
+
     for (int i = 0; i < initial_points.size(); i++) {
         vector<Vertex> points_i = initial_points[i];
-        draw_curve(points_i, 30);
+        draw_curve(points_i, 0.05);
     }
     glutSwapBuffers();
 }
