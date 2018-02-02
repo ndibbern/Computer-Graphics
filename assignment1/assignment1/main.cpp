@@ -249,7 +249,7 @@ void display() {
     left_cheek.push_back(Vertex(-0.3919f - deltaX_cheek, -0.1570f + deltaY_cheek));
     draw_curve(left_cheek, 30);
 
-    // right eye
+    // right eye top
     vector<Vertex> right_eye_top;
     right_eye_top.push_back(Vertex(0.1119f, 0.1480f));
     right_eye_top.push_back(Vertex(0.1119f, 0.2097f));
@@ -258,6 +258,7 @@ void display() {
     right_eye_top.push_back(Vertex(0.1409f, 0.1603f));
     draw_curve(right_eye_top, 30);
     
+    // right eye bottom
     GLfloat deltaY_eye = 0.28f;
     GLfloat deltaX_eye = 0.255f;
     vector<Vertex> right_eye_bottom;
@@ -268,8 +269,27 @@ void display() {
     right_eye_bottom.push_back(Vertex(-0.1501f + deltaX_eye, -0.2128f + deltaY_eye));
     right_eye_bottom.push_back(Vertex(-0.1409f + deltaX_eye, -0.1603f + deltaY_eye));
     right_eye_bottom.push_back(Vertex(0.1119f, 0.1480f));
-
     draw_curve(right_eye_bottom, 30);
+    
+    // left eye top
+    vector<Vertex> left_eye_top;
+    left_eye_top.push_back(Vertex(-0.1119f, 0.1480f));
+    left_eye_top.push_back(Vertex(-0.1119f, 0.2097f));
+    left_eye_top.push_back(Vertex(-0.0995f, 0.2128f));
+    left_eye_top.push_back(Vertex(-0.1501f, 0.2128f));
+    left_eye_top.push_back(Vertex(-0.1409f, 0.1603f));
+    draw_curve(left_eye_top, 30);
+    
+    // left eye bottom
+    vector<Vertex> left_eye_bottom;
+    left_eye_bottom.push_back(Vertex(-0.1409f, 0.1603f));
+    left_eye_bottom.push_back(Vertex(0.1119f - deltaX_eye, -0.1480f +deltaY_eye));
+    left_eye_bottom.push_back(Vertex(0.1119f - deltaX_eye, -0.2097f + deltaY_eye));
+    left_eye_bottom.push_back(Vertex(0.0995f - deltaX_eye, -0.2128f + deltaY_eye));
+    left_eye_bottom.push_back(Vertex(0.1501f - deltaX_eye, -0.2128f + deltaY_eye));
+    left_eye_bottom.push_back(Vertex(0.1409f - deltaX_eye, -0.1603f + deltaY_eye));
+    left_eye_bottom.push_back(Vertex(-0.1119f, 0.1480f));
+    draw_curve(left_eye_bottom, 30);
     
     //  hair right
     vector<Vertex> hair_right;
@@ -287,8 +307,8 @@ void display() {
     hair_right.push_back(Vertex(0.3194f, 0.4822f));
     hair_right.push_back(Vertex(0.1774f, 0.5114f));
     hair_right.push_back(Vertex(0.1230f, 0.5308f));
-    hair_right.push_back(Vertex(0.08220f, 0.5483f));
-    hair_right.push_back(Vertex(0.03160f, 0.5503f));
+    hair_right.push_back(Vertex(0.0822f, 0.5483f));
+    hair_right.push_back(Vertex(0.0316f, 0.5503f));
     hair_right.push_back(Vertex(-0.0189f, 0.5716f));
     hair_right.push_back(Vertex(-0.0656f, 0.5678f));
     hair_right.push_back(Vertex(-0.0656f, 0.5658f));
@@ -299,7 +319,7 @@ void display() {
     hair_right.push_back(Vertex(-0.2912f, 0.5483));
     hair_right.push_back(Vertex(-0.3125f, 0.4569f));
     hair_right.push_back(Vertex(-0.3164f, 0.4453f));
-    draw_curve(hair_right, 50);
+    draw_curve(hair_right, 40);
    
     //hair right down
     vector<Vertex> hair_right_down;
@@ -367,87 +387,3 @@ int main(int argc, char *argv[]) {
     glutMainLoop();
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-//
-//
-////Right eye top
-//vector<Vertex> eye_r;
-//eye_r.push_back(Vertex(0.05f, 0.00f));
-//eye_r.push_back(Vertex(0.2f, 0.85f));
-//eye_r.push_back(Vertex(0.4f, 0.00f));
-//draw_curve(eye_r, 30);
-//
-//vector<Vertex> eye_r_bot;
-//eye_r_bot.push_back(Vertex(0.05f, -0.00f));
-//eye_r_bot.push_back(Vertex(0.2f, -0.85f));
-//eye_r_bot.push_back(Vertex(0.4f, -0.00f));
-//draw_curve(eye_r_bot, 30);
-//
-//vector<Vertex> eye_r_interior;
-//eye_r_interior.push_back(Vertex(0.2f, 0.12f));
-//eye_r_interior.push_back(Vertex(-0.3f, 0.00f));
-//eye_r_interior.push_back(Vertex(0.2f, -0.12f));
-//draw_curve(eye_r_interior, 30);
-//
-//vector<Vertex> eye_r_interior_l;
-//eye_r_interior_l.push_back(Vertex(0.25f, 0.12f));
-//eye_r_interior_l.push_back(Vertex(0.7f, 0.00f));
-//eye_r_interior_l.push_back(Vertex(0.25f, -0.12f));
-//draw_curve(eye_r_interior_l, 30);
-//
-//vector<Vertex> eye_l_interior_l;
-//eye_l_interior_l.push_back(Vertex(-0.2f, 0.12f));
-//eye_l_interior_l.push_back(Vertex(0.3f, 0.00f));
-//eye_l_interior_l.push_back(Vertex(-0.2f, -0.12f));
-//draw_curve(eye_l_interior_l, 30);
-//
-//vector<Vertex> eye_l_interior_r;
-//eye_l_interior_r.push_back(Vertex(-0.24f, 0.12f));
-//eye_l_interior_r.push_back(Vertex(-0.7f, 0.00f));
-//eye_l_interior_r.push_back(Vertex(-0.24f, -0.12f));
-//draw_curve(eye_l_interior_r, 30);
-////    // Left eye
-//vector<Vertex> eye_l;
-//eye_l.push_back(Vertex(-0.05f, 0.00f));
-//eye_l.push_back(Vertex(-0.2f, 0.85f));
-//eye_l.push_back(Vertex(-0.40f, 0.00f));
-//draw_curve(eye_l, 30);
-//
-//vector<Vertex> eye_l_bot;
-//eye_l_bot.push_back(Vertex(-0.05f, -0.00f));
-//eye_l_bot.push_back(Vertex(-0.2f, -0.85f));
-//eye_l_bot.push_back(Vertex(-0.4f, -0.00f));
-//draw_curve(eye_l_bot, 30);
-//
-//vector<Vertex> stash;
-//vector<Vertex> stash1;
-//vector<Vertex> stash2;
-//vector<Vertex> stash3;
-//stash.push_back(Vertex(0.40f, -0.45f));
-//stash.push_back(Vertex(0.30f, -0.80f));
-//stash.push_back(Vertex(0.20f, -0.45f));
-//stash1.push_back(Vertex(0.20f, -0.45f));
-//stash1.push_back(Vertex(0.10f, 0.50f));
-//stash1.push_back(Vertex(0.00f, -0.45f));
-//stash2.push_back(Vertex(0.00f, -0.45f));
-//stash2.push_back(Vertex(-0.10f, -0.80f));
-//stash2.push_back(Vertex(-0.20f, -0.45f));
-//stash3.push_back(Vertex(-0.20f, -0.45f));
-//stash3.push_back(Vertex(-0.30f, 0.50f));
-//stash3.push_back(Vertex(-0.40f, -0.45f));
-//draw_curve(stash, 20);
-//draw_curve(stash1, 20);
-//draw_curve(stash2, 20);
-//draw_curve(stash3, 20);
-
