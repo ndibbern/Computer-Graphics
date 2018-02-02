@@ -249,20 +249,31 @@ void display() {
     left_cheek.push_back(Vertex(-0.3919f - deltaX_cheek, -0.1570f + deltaY_cheek));
     draw_curve(left_cheek, 30);
 
-//    // right eye
-//    vector<Vertex> right_eye;
-//    right_eye.push_back(Vertex(0.1493f, 0.2011f + deltaY_cheek));
-//    right_eye.push_back(Vertex(0.1493f, 0.1021f + deltaY_cheek));
-//    right_eye.push_back(Vertex(0.0348f, 0.1021f + deltaY_cheek));
-//    right_eye.push_back(Vertex(0.0441f, 0.2011f + deltaY_cheek));
-//    right_eye.push_back(Vertex(0.1493f, 0.2011f + deltaY_cheek));
-//    draw_curve(right_eye, 30);
+    // right eye
+    vector<Vertex> right_eye_top;
+    right_eye_top.push_back(Vertex(0.1119f, 0.1480f));
+    right_eye_top.push_back(Vertex(0.1119f, 0.2097f));
+    right_eye_top.push_back(Vertex(0.0995f, 0.2128f));
+    right_eye_top.push_back(Vertex(0.1501f, 0.2128f));
+    right_eye_top.push_back(Vertex(0.1409f, 0.1603f));
+    draw_curve(right_eye_top, 30);
     
-    
+    GLfloat deltaY_eye = 0.28f;
+    GLfloat deltaX_eye = 0.255f;
+    vector<Vertex> right_eye_bottom;
+    right_eye_bottom.push_back(Vertex(0.1409f, 0.1603f));
+    right_eye_bottom.push_back(Vertex(-0.1119f + deltaX_eye, -0.1480f +deltaY_eye));
+    right_eye_bottom.push_back(Vertex(-0.1119f + deltaX_eye, -0.2097f + deltaY_eye));
+    right_eye_bottom.push_back(Vertex(-0.0995f + deltaX_eye, -0.2128f + deltaY_eye));
+    right_eye_bottom.push_back(Vertex(-0.1501f + deltaX_eye, -0.2128f + deltaY_eye));
+    right_eye_bottom.push_back(Vertex(-0.1409f + deltaX_eye, -0.1603f + deltaY_eye));
+    right_eye_bottom.push_back(Vertex(0.1119f, 0.1480f));
+
+    draw_curve(right_eye_bottom, 30);
     
     //  hair right
     vector<Vertex> hair_right;
-    hair_right.push_back(Vertex(0.3912f,  0.0654f));
+    hair_right.push_back(Vertex(0.3912f, 0.0654f));
     hair_right.push_back(Vertex(0.4224f, 0.0739f));
     hair_right.push_back(Vertex(0.4438f, 0.1050f));
     hair_right.push_back(Vertex(0.4574f, 0.1517f));
@@ -274,7 +285,7 @@ void display() {
     hair_right.push_back(Vertex(0.3894f, 0.4219f));
     hair_right.push_back(Vertex(0.3602f, 0.4589f));
     hair_right.push_back(Vertex(0.3194f, 0.4822f));
-    hair_right.push_back(Vertex(0.1774,  0.5114f));
+    hair_right.push_back(Vertex(0.1774f, 0.5114f));
     hair_right.push_back(Vertex(0.1230f, 0.5308f));
     hair_right.push_back(Vertex(0.08220f, 0.5483f));
     hair_right.push_back(Vertex(0.03160f, 0.5503f));
