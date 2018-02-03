@@ -6,8 +6,23 @@
  ** Note: although the assignment should be completed individually
  you may speak with classmates on high level algorithmic concepts. Please
  list their names in this section
- Project Summary: A short paragraph (3-4 sentences) describing the work you
- did for the project: e.g. did you use the iterative or recursive approach?
+ Project Summary:
+ In this project I took two approaches: the iterative version and the generalized iterative version of Bezier Algorithm.
+ The first algorithm iterates through the control points finiding the midpoints between those points and repeating this process an
+ n_iter number of times. The generalized bezier instead makes use of the formal generalized equation from Bezier's algorithm which is
+ basically a binomial expansion. I reproduced this code by writing an n choose i function (to generate pascal triangle values) and then
+ using this function in my B function, which generates the bezier point for a given t and a set of control points. The generate_points function
+ then takes the initial given control points and calles the B function for  t values in the range [0,1] with dt being a parameter given to the function.
+ This now will give us a good approximation of the curve. Finally the draw curve function calls the generate_points function giving it the values
+ of the control points and the value for dt. The generate_points will now return the list of new values and then we are all good to plot it. The
+ way points are ploting is by joining them together with lines. The iterative method works really similar, but it is less precise since
+ it just is a special case of the generalized Bezier.
+
+To get my initial contorl points I used a code writen by myself in MATLAB that takes a picture and user inputs (in the form of clicks)
+of places on the image and returns the coordinates of such chosen points.These points are then normalized such that they are on the range that
+I want to ([0,1] in my case with the origin on the center of the image). These points are inputed to the init_sketch() function which
+generates a vector of vectors of vertices. This function is finally called through the display function.
+On the display function we then iterate through the vectors of vectors and we call draw function in order to plot them!
  ***/
 #ifdef __APPLE__
 #include <OpenGL/gl.h>

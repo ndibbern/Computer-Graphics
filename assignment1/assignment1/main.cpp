@@ -12,10 +12,17 @@
  n_iter number of times. The generalized bezier instead makes use of the formal generalized equation from Bezier's algorithm which is
  basically a binomial expansion. I reproduced this code by writing an n choose i function (to generate pascal triangle values) and then
  using this function in my B function, which generates the bezier point for a given t and a set of control points. The generate_points function
- then takes the initial given control points and calles the B function for values in the range [0,1] with dt being a parameter given to the function.
- This now will give us a good approximation of the curve. Finally the draw curve function calles the generate_points function giving it the values
- of the control points and the value for dt. The generate_points will now return the list of new values and then we are all good to plot it.
- The iterative method works really similar, but it is less precise since it just is a special case of the generalized Bezier.
+ then takes the initial given control points and calles the B function for  t values in the range [0,1] with dt being a parameter given to the function.
+ This now will give us a good approximation of the curve. Finally the draw curve function calls the generate_points function giving it the values
+ of the control points and the value for dt. The generate_points will now return the list of new values and then we are all good to plot it. The
+ way points are ploting is by joining them together with lines. The iterative method works really similar, but it is less precise since
+ it just is a special case of the generalized Bezier.
+ 
+To get my initial contorl points I used a code writen by myself in MATLAB that takes a picture and user inputs (in the form of clicks)
+of places on the image and returns the coordinates of such chosen points.These points are then normalized such that they are on the range that
+I want to ([0,1] in my case with the origin on the center of the image). These points are inputed to the init_sketch() function which
+generates a vector of vectors of vertices. This function is finally called through the display function.
+On the display function we then iterate through the vectors of vectors and we call draw function in order to plot them!
  ***/
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -46,6 +53,7 @@ void setup() {
 
 vector<Vertex> generate_points(vector<Vertex> control_points) {
     vector<Vertex> points;
+    // push the first point
     points.push_back(control_points[0]);
     for (int m = 0; m < control_points.size() - 1; m++) {
         //step through points
@@ -57,6 +65,7 @@ vector<Vertex> generate_points(vector<Vertex> control_points) {
         GLfloat x = (0.5)*v_0.get_x()+(0.5)*v_1.get_x();
         points.push_back(Vertex(x, y));
     }
+    // push the last point
     points.push_back(control_points[control_points.size()-1]);
     return points;
 }
@@ -426,6 +435,7 @@ void display() {
     glColor3f(0.0f, 0.0f, 0.0f);
     vector<vector<Vertex>> initial_points = init_sketch();
     
+    // Iterate through the vector of vextors and draw the curves
     for (int i = 0; i < initial_points.size(); i++) {
         vector<Vertex> points_i = initial_points[i];
         draw_curve(points_i, 30);
