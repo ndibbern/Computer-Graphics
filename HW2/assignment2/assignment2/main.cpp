@@ -60,18 +60,16 @@ GLfloat* vector2array(vector<GLfloat> vec) {
 // Converts Cartesian coordinates to homogeneous coordinates
 vector<GLfloat> to_homogenous_coord(vector<GLfloat> cartesian_coords) {
     vector<GLfloat> result;
-    
-    // Append the 1 in the 4th dimension to generate homoegenous coordinates
-    
+        // Append the 1 in the 4th dimension to generate homoegenous coordinates
+    result.push_back(1.00f);
     return result;
 }
 
 // Converts Cartesian coordinates to homogeneous coordinates
 vector<GLfloat> to_cartesian_coord(vector<GLfloat> homogenous_coords) {
     vector<GLfloat> result;
-    
     // Remove the 1 in the 4th dimension to generate Cartesian coordinates
-    
+    result.pop_back();
     return result;
 }
 
