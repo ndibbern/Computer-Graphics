@@ -75,29 +75,39 @@ vector<GLfloat> to_cartesian_coord(vector<GLfloat> homogenous_coords) {
 
 // Definition of a translation matrix
 vector<GLfloat> translation_matrix (float dx, float dy, float dz) {
-    vector<GLfloat> translate_mat;
-    
+    vector<GLfloat> translate_mat = {1.0f, 0.0f, 0.0f, dx,
+                                     0.0f, 1.0f, 0.0f, dy,
+                                     0.0f, 0.0f, 1.0f, dz,
+                                     0.0f, 0.0f, 0.0f, 1.0f};
     return translate_mat;
 }
 
 // Definition of a scaling matrix
 vector<GLfloat> scaling_matrix (float sx, float sy, float sz) {
-    vector<GLfloat> scale_mat;
-    
+    vector<GLfloat> scale_mat = {sx,   0.0f, 0.0f, 0.0f,
+                                 0.0f, sy,   0.0f, 0.0f,
+                                 0.0f, 0.0f, sz,   0.0f,
+                                 0.0f, 0.0f, 0.0f, 1.0f};
+
     return scale_mat;
 }
 
 // Definition of a rotation matrix along the x-axis theta degrees
 vector<GLfloat> rotation_matrix_x (float theta) {
-    vector<GLfloat> rotate_mat_x;
-    
+    vector<GLfloat> rotate_mat_x= {1.0f,        0.0f,        0.0f,        0.0f,
+                                   0.0f,        cos(theta), -sin(theta),  0.0f,
+                                   0.0f,        sin(theta),  cos(theta),  0.0f,
+                                   0.0f,        0.0f,        0.0f,        1.0f};
     return rotate_mat_x;
 }
 
 
 // Definition of a rotation matrix along the y-axis by theta degrees
 vector<GLfloat> rotation_matrix_y (float theta) {
-    vector<GLfloat> rotate_mat_y;
+    vector<GLfloat> rotate_mat_y= { cos(theta), 0.0f, sin(theta), 0.0f,
+                                    0.0f,       1.0f, 0.0f,       0.0f,
+                                   -sin(theta), 0.0f, cos(theta), 0.0f,
+                                    0.0f,       0.0f, 0.0f,       1.0f};
     
     return rotate_mat_y;
 }
@@ -105,8 +115,10 @@ vector<GLfloat> rotation_matrix_y (float theta) {
 
 // Definition of a rotation matrix along the z-axis by theta degrees
 vector<GLfloat> rotation_matrix_z (float theta) {
-    vector<GLfloat> rotate_mat_z;
-    
+    vector<GLfloat> rotate_mat_z= {cos(theta), -sin(theta), 0.0f,   0.0f,
+                                   sin(theta),  cos(theta), 0.0f,   0.0f,
+                                   0.0f,        0.0f,       1.0f,   0.0f,
+                                   0.0f,        0.0f,       0.0f,   1.0f};
     return rotate_mat_z;
 }
 
