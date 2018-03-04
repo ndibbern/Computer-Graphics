@@ -162,20 +162,20 @@ vector<GLfloat> rotation_matrix_z (float theta) {
 
 // Perform matrix multiplication for A B
 vector<GLfloat> mat_mult(vector<GLfloat> A, vector<GLfloat> B) {
+
+    vector<GLfloat> result;
     vector<GLfloat>::iterator it1, it2;
+    
     int i = 0;
     int j = 0;
-    for(it1 = A.begin(); it1 != A.end() - 4; it1 += 4, i += 4){
+    for(it1 = A.begin(); it1 <= A.end() - 4; it1 += 4, i += 4){
         GLfloat result_value = 0.0f;
-        for(it2 = B.begin(); it2 != B.end() - 8; it2++, j+= 1){
-            result_value += A[i] * B[j] + A[i+1] *B[i+4] + A[i+2] * B[i+2*4] + A[i+3]*B[i];
-            
+        for(it2 = B.begin(); it2 < B.end() - 12; it2++, j++){
+            result_value = A[i] * B[j] + A[i+1] *B[j+4] + A[i+2] * B[j+2*4] + A[i+3]*B[j+3*4];
+            result.push_back(result_value);
         }
+        j = 0;
     }
-    vector<GLfloat> result;
-    
-    // Perform matrix multiplication for A B
-    
     return result;
 }
 
@@ -245,7 +245,11 @@ int main (int argc, char **argv) {
     vector<GLfloat> test2= {1, 2, 3, 0, 4, 5, 6, 0, 7, 8, 9, 0, 0, 0, 0, 1};
     vector<GLfloat> test4= {1, 2, 3, 0};
     vector<GLfloat> test3= {2,2,2};
-    vector<GLfloat> result = to_cartesian_coord(test4);
+    
+    //test mat mult
+    vector<GLfloat> test5= {1, 2, 3, 0, 4, 5, 6, 0, 7, 8, 9, 0, 0, 0, 0, 1};
+    vector<GLfloat> test6= {1, 2, 3, 0, 4, 5, 6, 0, 7, 8, 9, 0, 0, 0, 0, 1};
+    vector<GLfloat> result = mat_mult(test5, test6);
     vector<GLfloat>::iterator it;
     cout << "myvector contains:";
     for (it = result.begin(); it<result.end(); it++)
