@@ -164,17 +164,62 @@ vector<GLfloat> rotation_matrix_z (float theta) {
 vector<GLfloat> mat_mult(vector<GLfloat> A, vector<GLfloat> B) {
 
     vector<GLfloat> result;
-    vector<GLfloat>::iterator it1, it2;
+//    vector<GLfloat>::iterator it1, it2;
+//
+//    int i = 0;
+//    int j = 0;
+//    for(it1 = A.begin(); it1 <= A.end() - 4; it1 += 4, i += 4){
+//        GLfloat result_value = 0.0f;
+//        for(it2 = B.begin(); it2 < B.end() - 12; it2++, j++){
+//            result_value = A[i] * B[j] + A[i+1] *B[j+4] + A[i+2] * B[j+2*4] + A[i+3]*B[j+3*4];
+//            result.push_back(result_value);
+//        }
+//        j = 0;
+//    }
+    int r1, c1, r2, c2 = 0;
+    int counterA = 0;
+    int counterB = 0;
+
+    if(A.size() == 16){ r1 = 4;c1 = 4;}
+    if(B.size() == 16){r2 = 4;c2 = 4;}
+    if(A.size() == 4){r1 = 4;c1 = 1;}
+    if(B.size() == 4){r2 = 4;c2 = 1;}
     
-    int i = 0;
-    int j = 0;
-    for(it1 = A.begin(); it1 <= A.end() - 4; it1 += 4, i += 4){
-        GLfloat result_value = 0.0f;
-        for(it2 = B.begin(); it2 < B.end() - 12; it2++, j++){
-            result_value = A[i] * B[j] + A[i+1] *B[j+4] + A[i+2] * B[j+2*4] + A[i+3]*B[j+3*4];
-            result.push_back(result_value);
+    GLfloat a[r1][c1], b[r2][c2], C[r1][c2];
+
+    if (c1 != r2){
+        cout << "Matrices cannot be multiplied!";
+        exit(0);
+    }
+    // Copying A to matrix format
+    for (int i = 0; i < r1; i++)
+        for (int j = 0; j < c1; j++){
+            a[i][j] = A[counterA];
+            counterA++;
         }
-        j = 0;
+    // Copying B to matrix format
+    for (int i = 0; i < r2; i++)
+        for (int j = 0; j < c2; j++){
+            b[i][j] = B[counterB];
+            counterB++;
+        }
+
+    // Perform Multiplication
+    for (int i = 0; i < r1; i++) {
+        for (int j = 0; j < c2; j++) {
+            C[i][j] = 0;
+            for (int k = 0; k < r2; k++)
+            {
+                C[i][j] += a[i][k] * b[k][j];
+            }
+        }
+    }
+    
+    // Transform back to vector
+    for (int i = 0; i < r1; i++) {
+        for (int j = 0; j < c2; j++) {
+            result.push_back(C[i][j]);
+        }
     }
     return result;
 }
