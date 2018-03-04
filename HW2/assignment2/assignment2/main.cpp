@@ -26,6 +26,7 @@
 
 #include <math.h>
 #include <vector>
+#include <iostream>
 using namespace std;
 
 /**************************************************
@@ -59,11 +60,30 @@ GLfloat* vector2array(vector<GLfloat> vec) {
 
 // Converts Cartesian coordinates to homogeneous coordinates
 vector<GLfloat> to_homogenous_coord(vector<GLfloat> cartesian_coords) {
-    vector<GLfloat> result;
-        // Append the 1 in the 4th dimension to generate homoegenous coordinates
+    vector<GLfloat> result = cartesian_coords; // initialize with original coordinates
+    // Append the 1 in the 4th dimension to generate homoegenous coordinates
+    
+    // if it is a vector:
+    if (cartesian_coords.size() == 3) {
+        result.push_back(1.00f);
+        return result;
+    }
+    // if it is a 3x3 matrix
+    for (int i = 3; i <=8; i += 4){
+        vector<GLfloat>::iterator it = result.begin();
+        result.insert(it+i, 1, 0.00f);
+    }
+    // add last value
+    result.push_back(0.00f);
+    // add last row
+    result.push_back(0.00f);
+    result.push_back(0.00f);
+    result.push_back(0.00f);
     result.push_back(1.00f);
     return result;
 }
+
+// 1 1 1 0   1 1 1 0   1 1 1 0     0 0 0 1
 
 // Converts Cartesian coordinates to homogeneous coordinates
 vector<GLfloat> to_cartesian_coord(vector<GLfloat> homogenous_coords) {
@@ -105,10 +125,9 @@ vector<GLfloat> rotation_matrix_x (float theta) {
 // Definition of a rotation matrix along the y-axis by theta degrees
 vector<GLfloat> rotation_matrix_y (float theta) {
     vector<GLfloat> rotate_mat_y= { cos(theta), 0.0f, sin(theta), 0.0f,
-                                    0.0f,       1.0f, 0.0f,       0.0f,
+                                    0.0f,       1.0f, 0.0f      , 0.0f,
                                    -sin(theta), 0.0f, cos(theta), 0.0f,
-                                    0.0f,       0.0f, 0.0f,       1.0f};
-    
+                                    0.0f,       0.0f, 0.0f      , 1.0f};
     return rotate_mat_y;
 }
 
@@ -124,6 +143,16 @@ vector<GLfloat> rotation_matrix_z (float theta) {
 
 // Perform matrix multiplication for A B
 vector<GLfloat> mat_mult(vector<GLfloat> A, vector<GLfloat> B) {
+    vector<GLfloat>::iterator it1, it2;
+    int i = 0;
+    int j = 0;
+    for(it1 = A.begin(); it1 != A.end() - 4; it1 += 4, i += 4){
+        GLfloat result_value = 0.0f;
+        for(it2 = B.begin(); it2 != B.end() - 8; it2++, j+= 1){
+            result_value += A[i] * B[j] + A[i+1] *B[i+4] + A[i+2] * B[i+2*4] + A[i+3]*B[i];
+            
+        }
+    }
     vector<GLfloat> result;
     
     // Perform matrix multiplication for A B
@@ -192,6 +221,16 @@ void display_func() {
 
 
 int main (int argc, char **argv) {
+    //Testing functions:
+    vector<GLfloat> test= {2,2,2,  2,2,2  , 2,2,2};
+    vector<GLfloat> result = to_homogenous_coord(test);
+    vector<GLfloat>::iterator it;
+    cout << "myvector contains:";
+    for (it = result.begin(); it<result.end(); it++)
+        cout << ' ' << *it;
+    cout << '\n';
+    
+    
     // Initialize GLUT
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
@@ -213,4 +252,3 @@ int main (int argc, char **argv) {
     
     return 0;
 }
-
