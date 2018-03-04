@@ -162,20 +162,7 @@ vector<GLfloat> rotation_matrix_z (float theta) {
 
 // Perform matrix multiplication for A B
 vector<GLfloat> mat_mult(vector<GLfloat> A, vector<GLfloat> B) {
-
     vector<GLfloat> result;
-//    vector<GLfloat>::iterator it1, it2;
-//
-//    int i = 0;
-//    int j = 0;
-//    for(it1 = A.begin(); it1 <= A.end() - 4; it1 += 4, i += 4){
-//        GLfloat result_value = 0.0f;
-//        for(it2 = B.begin(); it2 < B.end() - 12; it2++, j++){
-//            result_value = A[i] * B[j] + A[i+1] *B[j+4] + A[i+2] * B[j+2*4] + A[i+3]*B[j+3*4];
-//            result.push_back(result_value);
-//        }
-//        j = 0;
-//    }
     int r1, c1, r2, c2 = 0;
     int counterA = 0;
     int counterB = 0;
