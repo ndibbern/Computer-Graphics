@@ -70,8 +70,7 @@ vector<GLfloat> to_homogenous_coord(vector<GLfloat> cartesian_coords) {
     }
     // if it is a 3x3 matrix
     for (int i = 3; i <=8; i += 4){
-        vector<GLfloat>::iterator it = result.begin();
-        result.insert(it+i, 1, 0.00f);
+        result.insert(result.begin()+i, 1, 0.00f);
     }
     // add last value
     result.push_back(0.00f);
@@ -83,13 +82,33 @@ vector<GLfloat> to_homogenous_coord(vector<GLfloat> cartesian_coords) {
     return result;
 }
 
-// 1 1 1 0   1 1 1 0   1 1 1 0     0 0 0 1
 
 // Converts Cartesian coordinates to homogeneous coordinates
 vector<GLfloat> to_cartesian_coord(vector<GLfloat> homogenous_coords) {
-    vector<GLfloat> result;
+    vector<GLfloat> result = homogenous_coords; // initialize with original coordinates
+    
     // Remove the 1 in the 4th dimension to generate Cartesian coordinates
+    
+    // if it is a vector:
+    if (homogenous_coords.size() == 4) {
+        result.pop_back();
+        return result;
+    }
+    
+    // if it is a 3x3 matrix
+    for (int i = 3; i <=3*3; i += 3){
+        result.erase(result.begin()+i);
+    }
+    // add last value
+    result.push_back(0.00f);
+    // add last row
     result.pop_back();
+    result.pop_back();
+    result.pop_back();
+    result.pop_back();
+    result.pop_back();
+    return result;
+    
     return result;
 }
 
@@ -223,7 +242,10 @@ void display_func() {
 int main (int argc, char **argv) {
     //Testing functions:
     vector<GLfloat> test= {2,2,2,  2,2,2  , 2,2,2};
-    vector<GLfloat> result = to_homogenous_coord(test);
+    vector<GLfloat> test2= {1, 2, 3, 0, 4, 5, 6, 0, 7, 8, 9, 0, 0, 0, 0, 1};
+    vector<GLfloat> test4= {1, 2, 3, 0};
+    vector<GLfloat> test3= {2,2,2};
+    vector<GLfloat> result = to_cartesian_coord(test4);
     vector<GLfloat>::iterator it;
     cout << "myvector contains:";
     for (it = result.begin(); it<result.end(); it++)
