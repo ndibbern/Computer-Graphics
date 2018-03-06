@@ -213,9 +213,25 @@ vector<GLfloat> mat_mult(vector<GLfloat> A, vector<GLfloat> B) {
 
 // Builds a unit cube centered at the origin
 vector<GLfloat> build_cube() {
-    vector<GLfloat> result;
     
-    // Creates a unit cube by transforming a set of planes
+    vector<GLfloat> init_plane_in_homogeneous = to_homogenous_coord(init_plane());
+    
+    // Creates a unit cube by transforming a set of planes. We do transformations in homogeneous but then transform back to cartesian
+    vector<GLfloat> front  = to_cartesian_coord(mat_mult(translation_matrix(0,0,1), init_plane_in_homogeneous));
+    vector<GLfloat> right  = to_cartesian_coord(mat_mult(translation_matrix(1,0,0), mat_mult(rotation_matrix_y(90), init_plane_in_homogeneous)));
+    vector<GLfloat> left   = to_cartesian_coord(mat_mult(translation_matrix(1,0,0), mat_mult(rotation_matrix_y(-90), init_plane_in_homogeneous)));
+    vector<GLfloat> back   = to_cartesian_coord(mat_mult(translation_matrix(0,0,-1), mat_mult(rotation_matrix_y(180), init_plane_in_homogeneous)));
+    vector<GLfloat> bottom = to_cartesian_coord(mat_mult(translation_matrix(0,-1,0), mat_mult(rotation_matrix_x(90), init_plane_in_homogeneous)));
+    vector<GLfloat> top    = to_cartesian_coord(mat_mult(translation_matrix(0,1,0), mat_mult(rotation_matrix_x(-90), init_plane_in_homogeneous)));
+    
+    // concatenate into one long vector
+    vector<GLfloat> result;
+    result = front;
+    result.insert(end(result), begin(back), end(back));
+    result.insert(end(result), begin(right), end(right));
+    result.insert(end(result), begin(left), end(left));
+    result.insert(end(result), begin(top), end(top));
+    result.insert(end(result), begin(bottom), end(bottom));
     
     return result;
 }
@@ -272,22 +288,27 @@ void display_func() {
 
 
 int main (int argc, char **argv) {
-    //Testing functions:
-    vector<GLfloat> test= {2,2,2,  2,2,2  , 2,2,2};
-    vector<GLfloat> test2= {1, 2, 3, 0, 4, 5, 6, 0, 7, 8, 9, 0, 0, 0, 0, 1};
-    vector<GLfloat> test4= {1, 2, 3, 0};
-    vector<GLfloat> test3= {2,2,2};
-    
-    //test mat mult
-    vector<GLfloat> test5= {1, 2, 3, 0, 4, 5, 6, 0, 7, 8, 9, 0, 0, 0, 0, 1};
-    vector<GLfloat> test6= {1, 2, 3, 0, 4, 5, 6, 0, 7, 8, 9, 0, 0, 0, 0, 1};
-    vector<GLfloat> result = mat_mult(test5, test6);
-    vector<GLfloat>::iterator it;
-    cout << "myvector contains:";
-    for (it = result.begin(); it<result.end(); it++)
-        cout << ' ' << *it;
-    cout << '\n';
-    
+// ----------------------------------------------------------------------------
+//TESTING MY THINGS HERE
+//    //Testing functions:
+//    vector<GLfloat> test= {2,2,2,  2,2,2  , 2,2,2};
+//    vector<GLfloat> test2= {1, 2, 3, 0, 4, 5, 6, 0, 7, 8, 9, 0, 0, 0, 0, 1};
+//    vector<GLfloat> test4= {1, 2, 3, 0};
+//    vector<GLfloat> test3= {2,2,2};
+//
+//    //test mat mult
+//    vector<GLfloat> test5= {1, 2, 3, 0, 4, 5, 6, 0, 7, 8, 9, 0, 0, 0, 0, 1};
+//    vector<GLfloat> test6= {1, 2, 3, 0, 4, 5, 6, 0, 7, 8, 9, 0, 0, 0, 0, 1};
+//    vector<GLfloat> result = mat_mult(test5, test6);
+//    vector<GLfloat> result = build_cube();
+//    vector<GLfloat>::iterator it;
+//    cout << "myvector contains:";
+//    for (it = result.begin(); it<result.end(); it++)
+//        cout << ' ' << *it;
+//    cout << '\n';
+//
+//
+// ----------------------------------------------------------------------------
     
     // Initialize GLUT
     glutInit(&argc, argv);
