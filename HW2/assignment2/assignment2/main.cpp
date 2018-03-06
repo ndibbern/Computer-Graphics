@@ -38,13 +38,22 @@ using namespace std;
  *                                                *
  *************************************************/
 
+static double d2r(double d) {
+    return (d / 180.0) * ((double) M_PI);
+}
+
 // Initializes a square plane of unit lengths
 vector<GLfloat> init_plane() {
     vector<GLfloat> vertices = {
         +0.5,   +0.5,   +0.0,
         -0.5,   +0.5,   +0.0,
         -0.5,   -0.5,   +0.0,
-        +0.5,   -0.5,   +0.0
+        +0.5,   -0.5,   +0.0,
+
+//        +1.0,   +1.0,   +0.0,
+//        -1.0,   +1.0,   +0.0,
+//        -1.0,   -1.0,   +0.0,
+//        +1.0,   -1.0,   +0.0,
     };
     return vertices;
 }
@@ -68,6 +77,15 @@ vector<GLfloat> to_homogenous_coord(vector<GLfloat> cartesian_coords) {
         result.push_back(1.00f);
         return result;
     }
+    // if it is a matrix that contains 4 points:
+    if (cartesian_coords.size() == 12) {
+        for (int i = 3; i <=12; i += 4){
+            result.insert(result.begin()+i, 1, 1.00f);
+        }
+        result.push_back(1.00);
+        return result;
+    }
+    
     // if it is a 3x3 matrix
     for (int i = 3; i <=8; i += 4){
         result.insert(result.begin()+i, 1, 0.00f);
@@ -169,6 +187,8 @@ vector<GLfloat> mat_mult(vector<GLfloat> A, vector<GLfloat> B) {
 
     if(A.size() == 16){ r1 = 4;c1 = 4;}
     if(B.size() == 16){r2 = 4;c2 = 4;}
+//    if(A.size() == 12){ r1 = 4;c1 = 3;}
+//    if(B.size() == 12){ r2 = 4;c2 = 3;}
     if(A.size() == 4){r1 = 4;c1 = 1;}
     if(B.size() == 4){r2 = 4;c2 = 1;}
     
@@ -218,11 +238,11 @@ vector<GLfloat> build_cube() {
     
     // Creates a unit cube by transforming a set of planes. We do transformations in homogeneous but then transform back to cartesian
     vector<GLfloat> front  = to_cartesian_coord(mat_mult(translation_matrix(0,0,1), init_plane_in_homogeneous));
-    vector<GLfloat> right  = to_cartesian_coord(mat_mult(translation_matrix(1,0,0), mat_mult(rotation_matrix_y(90), init_plane_in_homogeneous)));
-    vector<GLfloat> left   = to_cartesian_coord(mat_mult(translation_matrix(1,0,0), mat_mult(rotation_matrix_y(-90), init_plane_in_homogeneous)));
-    vector<GLfloat> back   = to_cartesian_coord(mat_mult(translation_matrix(0,0,-1), mat_mult(rotation_matrix_y(180), init_plane_in_homogeneous)));
-    vector<GLfloat> bottom = to_cartesian_coord(mat_mult(translation_matrix(0,-1,0), mat_mult(rotation_matrix_x(90), init_plane_in_homogeneous)));
-    vector<GLfloat> top    = to_cartesian_coord(mat_mult(translation_matrix(0,1,0), mat_mult(rotation_matrix_x(-90), init_plane_in_homogeneous)));
+    vector<GLfloat> right  = to_cartesian_coord(mat_mult(translation_matrix(1,0,0), mat_mult(rotation_matrix_y(d2r(90)), init_plane_in_homogeneous)));
+    vector<GLfloat> left   = to_cartesian_coord(mat_mult(translation_matrix(1,0,0), mat_mult(rotation_matrix_y(d2r(-90)), init_plane_in_homogeneous)));
+    vector<GLfloat> back   = to_cartesian_coord(mat_mult(translation_matrix(0,0,-1), mat_mult(rotation_matrix_y(d2r(180)), init_plane_in_homogeneous)));
+    vector<GLfloat> bottom = to_cartesian_coord(mat_mult(translation_matrix(0,-1,0), mat_mult(rotation_matrix_x(d2r(90)), init_plane_in_homogeneous)));
+    vector<GLfloat> top    = to_cartesian_coord(mat_mult(translation_matrix(0,1,0), mat_mult(rotation_matrix_x(d2r(-90)), init_plane_in_homogeneous)));
     
     // concatenate into one long vector
     vector<GLfloat> result;
@@ -246,6 +266,8 @@ vector<GLfloat> build_cube() {
  *                                                *
  *************************************************/
 
+float theta = 0.0;
+
 void setup() {
     // Enable the vertex array functionality
     glEnableClientState(GL_VERTEX_ARRAY);
@@ -261,11 +283,115 @@ void setup() {
     glClearColor(1.0, 1.0, 1.0, 0.0);
 }
 
+//void init_camera() {
+//    // Camera parameters
+//    glMatrixMode(GL_PROJECTION);
+//    glLoadIdentity();
+//    // Define a 50 degree field of view, 1:1 aspect ratio, near and far planes at 3 and 7
+//    gluPerspective(50.0, 1.0, 2.0, 10.0);
+//    // Position camera at (2, 3, 5), attention at (0, 0, 0), up at (0, 1, 0)
+//    gluLookAt(2.0, 6.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+//}
+
 void init_camera() {
     // Camera parameters
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 }
+
+//void display_func() {
+//    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//
+//    // World model parameters
+//    glMatrixMode(GL_MODELVIEW);
+//    glLoadIdentity();
+//
+//    glRotatef(theta, 0.0, 1.0, 0.0);
+//    glRotatef(theta, 1.0, 0.0, 0.0);
+//
+//    GLfloat vertices[] = {
+//        // Front plane
+//        +1.0,   +1.0,   +1.0,
+//        -1.0,   +1.0,   +1.0,
+//        -1.0,   -1.0,   +1.0,
+//        +1.0,   -1.0,   +1.0,
+//        // Back plane
+//        +1.0,   +1.0,   -1.0,
+//        -1.0,   +1.0,   -1.0,
+//        -1.0,   -1.0,   -1.0,
+//        +1.0,   -1.0,   -1.0,
+//        // Right
+//        +1.0,   +1.0,   -1.0,
+//        +1.0,   +1.0,   +1.0,
+//        +1.0,   -1.0,   +1.0,
+//        +1.0,   -1.0,   -1.0,
+//        // Left
+//        -1.0,   +1.0,   -1.0,
+//        -1.0,   +1.0,   +1.0,
+//        -1.0,   -1.0,   +1.0,
+//        -1.0,   -1.0,   -1.0,
+//        // Top
+//        +1.0,   +1.0,   +1.0,
+//        -1.0,   +1.0,   +1.0,
+//        -1.0,   +1.0,   -1.0,
+//        +1.0,   +1.0,   -1.0,
+//        // Bottom
+//        +1.0,   -1.0,   +1.0,
+//        -1.0,   -1.0,   +1.0,
+//        -1.0,   -1.0,   -1.0,
+//        +1.0,   -1.0,   -1.0,
+//    };
+//
+//    GLfloat colors[] = {
+//        // Front plane
+//        1.0,    0.0,    0.0,
+//        1.0,    0.0,    0.0,
+//        1.0,    0.0,    0.0,
+//        1.0,    0.0,    0.0,
+//        // Back plane
+//        0.0,    1.0,    0.0,
+//        0.0,    1.0,    0.0,
+//        0.0,    1.0,    0.0,
+//        0.0,    1.0,    0.0,
+//        // Right
+//        0.0,    0.0,    1.0,
+//        0.0,    0.0,    1.0,
+//        0.0,    0.0,    1.0,
+//        0.0,    0.0,    1.0,
+//        // Left
+//        1.0,    1.0,    0.0,
+//        1.0,    1.0,    0.0,
+//        1.0,    1.0,    0.0,
+//        1.0,    1.0,    0.0,
+//        // Top
+//        1.0,    0.0,    1.0,
+//        1.0,    0.0,    1.0,
+//        1.0,    0.0,    1.0,
+//        1.0,    0.0,    1.0,
+//        // Bottom
+//        0.0,    1.0,    1.0,
+//        0.0,    1.0,    1.0,
+//        0.0,    1.0,    1.0,
+//        0.0,    1.0,    1.0,
+//    };
+//
+//    glVertexPointer(3,          // 3 components (x, y, z)
+//                    GL_FLOAT,   // Vertex type is GL_FLOAT
+//                    0,          // Start position in referenced memory
+//                    vertices);  // Pointer to memory location to read from
+//
+//    //pass the color pointer
+//    glColorPointer(3,           // 3 components (r, g, b)
+//                   GL_FLOAT,    // Vertex type is GL_FLOAT
+//                   0,           // Start position in referenced memory
+//                   colors);     // Pointer to memory location to read from
+//
+//    // Draw quad point planes: each 4 vertices
+//    glDrawArrays(GL_QUADS, 0, 4*6);
+//
+//    glFlush();            //Finish rendering
+//    glutSwapBuffers();
+//}
 
 // Construct the scene using objects built from cubes/prisms
 GLfloat* init_scene() {
@@ -296,17 +422,27 @@ int main (int argc, char **argv) {
 //    vector<GLfloat> test4= {1, 2, 3, 0};
 //    vector<GLfloat> test3= {2,2,2};
 //
-//    //test mat mult
-//    vector<GLfloat> test5= {1, 2, 3, 0, 4, 5, 6, 0, 7, 8, 9, 0, 0, 0, 0, 1};
-//    vector<GLfloat> test6= {1, 2, 3, 0, 4, 5, 6, 0, 7, 8, 9, 0, 0, 0, 0, 1};
-//    vector<GLfloat> result = mat_mult(test5, test6);
-//    vector<GLfloat> result = build_cube();
-//    vector<GLfloat>::iterator it;
-//    cout << "myvector contains:";
-//    for (it = result.begin(); it<result.end(); it++)
-//        cout << ' ' << *it;
-//    cout << '\n';
-//
+    //test mat mult
+    vector<GLfloat> test5= {1, 2, 3, 0, 4, 5, 6, 0, 7, 8, 9, 0, 0, 0, 0, 1};
+    vector<GLfloat> test6= {1, 2, 3, 0, 4, 5, 6, 0, 7, 8, 9, 0, 0, 0, 0, 1};
+    //vector<GLfloat> result = mat_mult(test5, test6);
+    vector<GLfloat> result = build_cube();
+    vector<GLfloat>::iterator it;
+    cout << "myvector contains:";
+    for (it = result.begin(); it<result.end(); it++)
+        cout << ' ' << *it;
+    cout << '\n';
+    
+    // TESTING TRANSFORMATION MATRICES: // TRANSLATION WORKS (CHECKED)
+//    vector<GLfloat> v= {1,1,0,1};
+//    vector<GLfloat> translate = to_cartesian_coord(mat_mult(rotation_matrix_z(d2r(45)),v));
+//        vector<GLfloat>::iterator it;
+//        cout << "myvector contains:";
+//        for (it = translate.begin(); it<translate.end(); it++)
+//            cout << ' ' << *it;
+//        cout << '\n';
+    
+
 //
 // ----------------------------------------------------------------------------
     
