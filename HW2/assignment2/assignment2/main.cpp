@@ -69,6 +69,15 @@ vector<GLfloat> init_plane() {
     return vertices;
 }
 
+// Initializes the 4x4 identity matrix
+vector<GLfloat> identity() {
+    vector<GLfloat> vertices = {1, 0, 0, 0,
+                               0, 1, 0, 0,
+                               0, 0, 1, 0,
+                               0, 0, 0, 1};
+    return vertices;
+}
+
 // Converts a vector to an array
 GLfloat* vector2array(vector<GLfloat> vec) {
     GLfloat* arr = new GLfloat[vec.size()];
@@ -207,6 +216,7 @@ vector<GLfloat> mat_mult(vector<GLfloat> A, vector<GLfloat> B) {
             counterA++;
         }
     // Copying B to matrix format
+   
     for (int i = 0; i < r2; i++)
         for (int j = 0; j < c2; j++){
             b[i][j] = B[counterB];
@@ -233,23 +243,19 @@ vector<GLfloat> mat_mult(vector<GLfloat> A, vector<GLfloat> B) {
     return result;
 }
 
-
-
-// Performs matrix multiplication with given matrix and outputs a long concatenated vector with each point
-vector<GLfloat> multiply_by_init_plane(vector<GLfloat> transformation_matrix) {
+//// Performs matrix multiplication with given matrix and outputs a long concatenated vector with each point
+vector<GLfloat> multiply_by_init_plane(vector<GLfloat> transformation_matrix1, vector<GLfloat> transformation_matrix) {
     vector<GLfloat> result, homogeneous_plane_point, mult_result;
     vector<GLfloat> plane = init_plane();
-    
+
     for (int i = 0; i <=9; i += 3){
         vector<GLfloat> plane_point(plane.begin()+i, plane.begin()+i+3);
         homogeneous_plane_point = to_homogenous_coord(plane_point);
-        mult_result = mat_mult(transformation_matrix, homogeneous_plane_point);
+        mult_result = mat_mult(transformation_matrix1, mat_mult(transformation_matrix, homogeneous_plane_point));
         result.insert(end(result), begin(mult_result), end(mult_result));
     }
     return result;
 }
-
-
 
 // Builds a unit cube centered at the origin
 vector<GLfloat> build_cube() {
@@ -257,21 +263,21 @@ vector<GLfloat> build_cube() {
     vector<GLfloat> init_plane_in_homogeneous = to_homogenous_coord(init_plane());
     
     // Creates a unit cube by transforming a set of planes. We do transformations in homogeneous but then transform back to cartesian
-    vector<GLfloat> front  = to_cartesian_coord(multiply_by_init_plane(translation_matrix(0,0,1)));
-    vector<GLfloat> back   = to_cartesian_coord(mat_mult(translation_matrix(0,0,-1), multiply_by_init_plane(rotation_matrix_y(d2r(180)))));
-    vector<GLfloat> right  = to_cartesian_coord(mat_mult(translation_matrix(1,0,0), multiply_by_init_plane(rotation_matrix_y(d2r(90)))));
-    vector<GLfloat> left   = to_cartesian_coord(mat_mult(translation_matrix(1,0,0), multiply_by_init_plane(rotation_matrix_y(d2r(-90)))));
-    vector<GLfloat> bottom = to_cartesian_coord(mat_mult(translation_matrix(0,-1,0), multiply_by_init_plane(rotation_matrix_x(d2r(90)))));
-    vector<GLfloat> top    = to_cartesian_coord(mat_mult(translation_matrix(0,1,0), multiply_by_init_plane(rotation_matrix_x(d2r(-90)))));
+    vector<GLfloat> front  = to_cartesian_coord(multiply_by_init_plane(identity(), translation_matrix(0,0,1)));
+    vector<GLfloat> back   = to_cartesian_coord(multiply_by_init_plane(translation_matrix(0,0,-1), rotation_matrix_y(d2r(180))));
+    vector<GLfloat> right  = to_cartesian_coord(multiply_by_init_plane(translation_matrix(1,0,0),  rotation_matrix_y(d2r( 90))));
+    vector<GLfloat> left   = to_cartesian_coord(multiply_by_init_plane(translation_matrix(1,0,0),  rotation_matrix_y(d2r(-90))));
+    vector<GLfloat> bottom = to_cartesian_coord(multiply_by_init_plane(translation_matrix(0,-1,0), rotation_matrix_x(d2r( 90))));
+    vector<GLfloat> top    = to_cartesian_coord(multiply_by_init_plane(translation_matrix(0,1,0),  rotation_matrix_x(d2r(-90))));
     
     // concatenate into one long vector
     vector<GLfloat> result;
     result = front;
-    //result.insert(end(result), begin(back), end(back));
-//    result.insert(end(result), begin(right), end(right));
-//    result.insert(end(result), begin(left), end(left));
-//    result.insert(end(result), begin(top), end(top));
-//    result.insert(end(result), begin(bottom), end(bottom));
+    result.insert(end(result), begin(back), end(back));
+    result.insert(end(result), begin(right), end(right));
+    result.insert(end(result), begin(left), end(left));
+    result.insert(end(result), begin(top), end(top));
+    result.insert(end(result), begin(bottom), end(bottom));
     
     return result;
 }
@@ -360,9 +366,9 @@ int main (int argc, char **argv) {
 //        cout << '\n';
 //
 // ----------------------------------------------------------------------------
-    // TEST INIT CUBE
-//    vector<GLfloat> result = build_cube();
-//    print(result);
+   //  TEST INIT CUBE
+    vector<GLfloat> result = build_cube();
+    print(result);
 
     //----------------------------------------------------------------------------
     // TESTING MULTIPLY
@@ -376,12 +382,12 @@ int main (int argc, char **argv) {
     
  //----------------------------------------------------------------------------
  //    Testing multiply by init point
-    vector<GLfloat> identity= {1, 0, 0, 0,
-                               0, 1, 0, 0,
-                               0, 0, 1, 0,
-                               0, 0, 0, 1};
-    vector<GLfloat> result = multiply_by_init_plane(roty180);
-    print(to_cartesian_coord(result));
+//    vector<GLfloat> identity= {1, 0, 0, 0,
+//                               0, 1, 0, 0,
+//                               0, 0, 1, 0,
+//                               0, 0, 0, 1};
+//    vector<GLfloat> result = multiply_by_init_plane(roty180);
+//    print(to_cartesian_coord(result));
 
 //----------------------------------------------------------------------------
 //  //   TESTING TRANSFORMATION MATRICES: // TRANSLATION WORKS (CHECKED)
