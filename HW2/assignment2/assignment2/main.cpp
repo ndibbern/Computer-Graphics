@@ -49,11 +49,6 @@ vector<GLfloat> init_plane() {
         -0.5,   +0.5,   +0.0,
         -0.5,   -0.5,   +0.0,
         +0.5,   -0.5,   +0.0,
-
-//        +1.0,   +1.0,   +0.0,
-//        -1.0,   +1.0,   +0.0,
-//        -1.0,   -1.0,   +0.0,
-//        +1.0,   -1.0,   +0.0,
     };
     return vertices;
 }
@@ -126,8 +121,6 @@ vector<GLfloat> to_cartesian_coord(vector<GLfloat> homogenous_coords) {
     result.pop_back();
     result.pop_back();
     return result;
-    
-    return result;
 }
 
 // Definition of a translation matrix
@@ -187,8 +180,6 @@ vector<GLfloat> mat_mult(vector<GLfloat> A, vector<GLfloat> B) {
 
     if(A.size() == 16){ r1 = 4;c1 = 4;}
     if(B.size() == 16){r2 = 4;c2 = 4;}
-//    if(A.size() == 12){ r1 = 4;c1 = 3;}
-//    if(B.size() == 12){ r2 = 4;c2 = 3;}
     if(A.size() == 4){r1 = 4;c1 = 1;}
     if(B.size() == 4){r2 = 4;c2 = 1;}
     
@@ -231,13 +222,28 @@ vector<GLfloat> mat_mult(vector<GLfloat> A, vector<GLfloat> B) {
     return result;
 }
 
+// Performs matrix multiplication with given matrix and outputs a long concatenated vector with each point
+vector<GLfloat> multiply_by_init_plane(vector<GLfloat> transformation_matrix) {
+    vector<GLfloat> result, homogeneous_plane_point, mult_result;
+    vector<GLfloat> plane = init_plane();
+    
+    for (int i = 0; i <=9; i += 3){
+        vector<GLfloat> plane_point(plane.begin()+i, plane.begin()+i+3);
+        homogeneous_plane_point = to_homogenous_coord(plane_point);
+        mult_result = mat_mult(transformation_matrix, homogeneous_plane_point);
+        result.insert(end(result), begin(mult_result), end(mult_result));
+    }
+    
+    return result;
+}
+
 // Builds a unit cube centered at the origin
 vector<GLfloat> build_cube() {
     
     vector<GLfloat> init_plane_in_homogeneous = to_homogenous_coord(init_plane());
     
     // Creates a unit cube by transforming a set of planes. We do transformations in homogeneous but then transform back to cartesian
-    vector<GLfloat> front  = to_cartesian_coord(mat_mult(translation_matrix(0,0,1), init_plane_in_homogeneous));
+    vector<GLfloat> front  = (mat_mult(translation_matrix(0,0,1), init_plane_in_homogeneous));
     vector<GLfloat> right  = to_cartesian_coord(mat_mult(translation_matrix(1,0,0), mat_mult(rotation_matrix_y(d2r(90)), init_plane_in_homogeneous)));
     vector<GLfloat> left   = to_cartesian_coord(mat_mult(translation_matrix(1,0,0), mat_mult(rotation_matrix_y(d2r(-90)), init_plane_in_homogeneous)));
     vector<GLfloat> back   = to_cartesian_coord(mat_mult(translation_matrix(0,0,-1), mat_mult(rotation_matrix_y(d2r(180)), init_plane_in_homogeneous)));
@@ -247,11 +253,11 @@ vector<GLfloat> build_cube() {
     // concatenate into one long vector
     vector<GLfloat> result;
     result = front;
-    result.insert(end(result), begin(back), end(back));
-    result.insert(end(result), begin(right), end(right));
-    result.insert(end(result), begin(left), end(left));
-    result.insert(end(result), begin(top), end(top));
-    result.insert(end(result), begin(bottom), end(bottom));
+//    result.insert(end(result), begin(back), end(back));
+//    result.insert(end(result), begin(right), end(right));
+//    result.insert(end(result), begin(left), end(left));
+//    result.insert(end(result), begin(top), end(top));
+//    result.insert(end(result), begin(bottom), end(bottom));
     
     return result;
 }
@@ -298,6 +304,113 @@ void init_camera() {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 }
+
+// Construct the scene using objects built from cubes/prisms
+GLfloat* init_scene() {
+    return nullptr;
+}
+
+// Construct the color mapping of the scene
+GLfloat* init_color() {
+    return nullptr;
+}
+
+void display_func() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    // Perform display functions
+    
+    glFlush();            //Finish rendering
+    glutSwapBuffers();
+}
+
+
+int main (int argc, char **argv) {
+// ----------------------------------------------------------------------------
+//TESTING MY THINGS HERE
+//    //Testing functions:
+//    vector<GLfloat> test= {2,2,2,  2,2,2  , 2,2,2};
+//    vector<GLfloat> test2= {1, 2, 3, 0, 4, 5, 6, 0, 7, 8, 9, 0, 0, 0, 0, 1};
+//    vector<GLfloat> test4= {1, 2, 3, 0};
+//    vector<GLfloat> test3= {2,2,2};
+//
+//    //test mat mult
+//    vector<GLfloat> test5= {1, 0, 0, 0,
+//                            0, 1, 0, 0,
+//                            0, 0, 1, 0,
+//                            0, 0, 0, 1};
+//    vector<GLfloat> test6= {1, 2, 3, 4};
+//    vector<GLfloat> result = mat_mult(test5, test6);
+//    //vector<GLfloat> result = build_cube();
+//    vector<GLfloat>::iterator it;
+//    cout << "myvector contains:";
+//    for (it = result.begin(); it<result.end(); it++)
+//        cout << ' ' << *it;
+//    cout << '\n';
+// Testing multiply by init point
+    
+    //test mat mult
+    vector<GLfloat> identity= {1, 0, 0, 0,
+                               0, 1, 0, 0,
+                               0, 0, 1, 0,
+                               0, 0, 0, 1};
+    vector<GLfloat> result = multiply_by_init_plane(identity);
+    vector<GLfloat>::iterator it;
+    cout << "myvector contains:";
+    for (it = result.begin(); it<result.end(); it++)
+        cout << ' ' << *it;
+    cout << '\n';
+    
+//----------------------------------------------------------------------------
+//  //   TESTING TRANSFORMATION MATRICES: // TRANSLATION WORKS (CHECKED)
+//    vector<GLfloat> v= {1,1,0,1, 0,0,1,1};
+//    vector<GLfloat> translate = to_cartesian_coord(mat_mult(rotation_matrix_z(d2r(45)),v));
+//        vector<GLfloat>::iterator it;
+//        cout << "myvector contains:";
+//        for (it = translate.begin(); it<translate.end(); it++)
+//            cout << ' ' << *it;
+//        cout << '\n';
+    
+//
+// ----------------------------------------------------------------------------
+    
+    // Initialize GLUT
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
+    glutInitWindowSize(800, 600);
+    // Create a window with rendering context and everything else we need
+    glutCreateWindow("Assignment 2");
+    
+    setup();
+    init_camera();
+    
+    // Set up our display function
+    glutDisplayFunc(display_func);
+    // Render our world
+    glutMainLoop();
+    
+    // Remember to call "delete" on your dynmically allocated arrays
+    // such that you don't suffer from memory leaks. e.g.
+    // delete arr;
+    
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //void display_func() {
 //    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -392,78 +505,3 @@ void init_camera() {
 //    glFlush();            //Finish rendering
 //    glutSwapBuffers();
 //}
-
-// Construct the scene using objects built from cubes/prisms
-GLfloat* init_scene() {
-    return nullptr;
-}
-
-// Construct the color mapping of the scene
-GLfloat* init_color() {
-    return nullptr;
-}
-
-void display_func() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-    // Perform display functions
-    
-    glFlush();            //Finish rendering
-    glutSwapBuffers();
-}
-
-
-int main (int argc, char **argv) {
-// ----------------------------------------------------------------------------
-//TESTING MY THINGS HERE
-//    //Testing functions:
-//    vector<GLfloat> test= {2,2,2,  2,2,2  , 2,2,2};
-//    vector<GLfloat> test2= {1, 2, 3, 0, 4, 5, 6, 0, 7, 8, 9, 0, 0, 0, 0, 1};
-//    vector<GLfloat> test4= {1, 2, 3, 0};
-//    vector<GLfloat> test3= {2,2,2};
-//
-    //test mat mult
-    vector<GLfloat> test5= {1, 2, 3, 0, 4, 5, 6, 0, 7, 8, 9, 0, 0, 0, 0, 1};
-    vector<GLfloat> test6= {1, 2, 3, 0, 4, 5, 6, 0, 7, 8, 9, 0, 0, 0, 0, 1};
-    //vector<GLfloat> result = mat_mult(test5, test6);
-    vector<GLfloat> result = build_cube();
-    vector<GLfloat>::iterator it;
-    cout << "myvector contains:";
-    for (it = result.begin(); it<result.end(); it++)
-        cout << ' ' << *it;
-    cout << '\n';
-    
-    // TESTING TRANSFORMATION MATRICES: // TRANSLATION WORKS (CHECKED)
-//    vector<GLfloat> v= {1,1,0,1};
-//    vector<GLfloat> translate = to_cartesian_coord(mat_mult(rotation_matrix_z(d2r(45)),v));
-//        vector<GLfloat>::iterator it;
-//        cout << "myvector contains:";
-//        for (it = translate.begin(); it<translate.end(); it++)
-//            cout << ' ' << *it;
-//        cout << '\n';
-    
-
-//
-// ----------------------------------------------------------------------------
-    
-    // Initialize GLUT
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
-    glutInitWindowSize(800, 600);
-    // Create a window with rendering context and everything else we need
-    glutCreateWindow("Assignment 2");
-    
-    setup();
-    init_camera();
-    
-    // Set up our display function
-    glutDisplayFunc(display_func);
-    // Render our world
-    glutMainLoop();
-    
-    // Remember to call "delete" on your dynmically allocated arrays
-    // such that you don't suffer from memory leaks. e.g.
-    // delete arr;
-    
-    return 0;
-}
