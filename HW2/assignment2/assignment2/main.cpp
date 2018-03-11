@@ -346,62 +346,6 @@ void display_func() {
 
 
 int main (int argc, char **argv) {
-// ----------------------------------------------------------------------------
-//TESTING MY THINGS HERE
-//    //Testing functions:
-//    vector<GLfloat> test= {2,2,2,  2,2,2  , 2,2,2};
-//    vector<GLfloat> test2= {1, 2, 3, 0, 4, 5, 6, 0, 7, 8, 9, 0, 0, 0, 0, 1};
-//    vector<GLfloat> test4= {1, 2, 3, 0};
-//    vector<GLfloat> test3= {2,2,2};
-//
-    
-// ----------------------------------------------------------------------------
-//    // TEST To homogeneous
-//    vector<GLfloat> test = {2, 2, 2, 1, -2, 2, 2, 1, -2, -2, 2, 1, 2, -2, 2, 1};
-//    vector<GLfloat> result = to_cartesian_coord(test);
-//    vector<GLfloat>::iterator it;
-//        cout << "myvector contains:";
-//        for (it = result.begin(); it<result.end(); it++)
-//            cout << ' ' << *it;
-//        cout << '\n';
-//
-// ----------------------------------------------------------------------------
-   //  TEST INIT CUBE
-    vector<GLfloat> result = build_cube();
-    print(result);
-
-    //----------------------------------------------------------------------------
-    // TESTING MULTIPLY
-        vector<GLfloat> roty180   {-1, 0, 0, 0,
-                                   0, 1, 0, 0,
-                                   0, 0, -1, 0,
-                                   0, 0, 0, 1};
-
-//    vector<GLfloat> somevector {1,1,0,1};
-//    print(mat_mult(roty180, somevector));
-    
- //----------------------------------------------------------------------------
- //    Testing multiply by init point
-//    vector<GLfloat> identity= {1, 0, 0, 0,
-//                               0, 1, 0, 0,
-//                               0, 0, 1, 0,
-//                               0, 0, 0, 1};
-//    vector<GLfloat> result = multiply_by_init_plane(roty180);
-//    print(to_cartesian_coord(result));
-
-//----------------------------------------------------------------------------
-//  //   TESTING TRANSFORMATION MATRICES: // TRANSLATION WORKS (CHECKED)
-//    vector<GLfloat> v= {1,1,0,1, 0,0,1,1};
-//    vector<GLfloat> translate = to_cartesian_coord(mat_mult(rotation_matrix_z(d2r(45)),v));
-//        vector<GLfloat>::iterator it;
-//        cout << "myvector contains:";
-//        for (it = translate.begin(); it<translate.end(); it++)
-//            cout << ' ' << *it;
-//        cout << '\n';
-    
-//
-// ----------------------------------------------------------------------------
-    
     // Initialize GLUT
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
