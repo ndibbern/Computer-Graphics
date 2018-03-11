@@ -1,13 +1,13 @@
 /***
  Assignment-2: Geometric Modeling of a Scene
- 
+
  Name: Wong, Alex (Please write your name in Last Name, First Name format)
- 
+
  Collaborators: Doe, John; Doe, Jane
  ** Note: although the assignment should be completed individually
  you may speak with classmates on high level algorithmic concepts. Please
  list their names in this section
- 
+
  Project Summary: A short paragraph (3-4 sentences) describing the work you
  did for the project.
  ***/
@@ -91,7 +91,7 @@ GLfloat* vector2array(vector<GLfloat> vec) {
 vector<GLfloat> to_homogenous_coord(vector<GLfloat> cartesian_coords) {
     vector<GLfloat> result = cartesian_coords; // initialize with original coordinates
     // Append the 1 in the 4th dimension to generate homoegenous coordinates
-    
+
     // if it is a vector:
     if (cartesian_coords.size() == 3) {
         result.push_back(1.00f);
@@ -105,7 +105,7 @@ vector<GLfloat> to_homogenous_coord(vector<GLfloat> cartesian_coords) {
         result.push_back(1.00);
         return result;
     }
-    
+
     // if it is a 3x3 matrix
     for (int i = 3; i <=8; i += 4){
         result.insert(result.begin()+i, 1, 0.00f);
@@ -124,15 +124,15 @@ vector<GLfloat> to_homogenous_coord(vector<GLfloat> cartesian_coords) {
 // Converts Cartesian coordinates to homogeneous coordinates
 vector<GLfloat> to_cartesian_coord(vector<GLfloat> homogenous_coords) {
     vector<GLfloat> result = homogenous_coords; // initialize with original coordinates
-    
+
     // Remove the 1 in the 4th dimension to generate Cartesian coordinates
-    
+
     // if it is a vector:
     if (homogenous_coords.size() == 4) {
         result.pop_back();
         return result;
     }
-    
+
     // if it is a 4x4 matrix
     for (int i = 3; i <=3*3; i += 3){
         result.erase(result.begin()+i);
@@ -202,7 +202,7 @@ vector<GLfloat> mat_mult(vector<GLfloat> A, vector<GLfloat> B) {
     if(B.size() == 16){r2 = 4;c2 = 4;}
     if(A.size() == 4){r1 = 4;c1 = 1;}
     if(B.size() == 4){r2 = 4;c2 = 1;}
-    
+
     GLfloat a[r1][c1], b[r2][c2], C[r1][c2];
 
     if (c1 != r2){
@@ -216,7 +216,7 @@ vector<GLfloat> mat_mult(vector<GLfloat> A, vector<GLfloat> B) {
             counterA++;
         }
     // Copying B to matrix format
-   
+
     for (int i = 0; i < r2; i++)
         for (int j = 0; j < c2; j++){
             b[i][j] = B[counterB];
@@ -233,7 +233,7 @@ vector<GLfloat> mat_mult(vector<GLfloat> A, vector<GLfloat> B) {
             }
         }
     }
-    
+
     // Transform back to vector
     for (int i = 0; i < r1; i++) {
         for (int j = 0; j < c2; j++) {
@@ -259,17 +259,17 @@ vector<GLfloat> multiply_by_init_plane(vector<GLfloat> transformation_matrix1, v
 
 // Builds a unit cube centered at the origin
 vector<GLfloat> build_cube() {
-    
+
     vector<GLfloat> init_plane_in_homogeneous = to_homogenous_coord(init_plane());
-    
+
     // Creates a unit cube by transforming a set of planes. We do transformations in homogeneous but then transform back to cartesian
     vector<GLfloat> front  = to_cartesian_coord(multiply_by_init_plane(identity(), translation_matrix(0,0,1)));
     vector<GLfloat> back   = to_cartesian_coord(multiply_by_init_plane(translation_matrix(0,0,-1), rotation_matrix_y(d2r(180))));
     vector<GLfloat> right  = to_cartesian_coord(multiply_by_init_plane(translation_matrix(1,0,0),  rotation_matrix_y(d2r( 90))));
-    vector<GLfloat> left   = to_cartesian_coord(multiply_by_init_plane(translation_matrix(1,0,0),  rotation_matrix_y(d2r(-90))));
+    vector<GLfloat> left   = to_cartesian_coord(multiply_by_init_plane(translation_matrix(-1,0,0),  rotation_matrix_y(d2r(-90))));
     vector<GLfloat> bottom = to_cartesian_coord(multiply_by_init_plane(translation_matrix(0,-1,0), rotation_matrix_x(d2r( 90))));
     vector<GLfloat> top    = to_cartesian_coord(multiply_by_init_plane(translation_matrix(0,1,0),  rotation_matrix_x(d2r(-90))));
-    
+
     // concatenate into one long vector
     vector<GLfloat> result;
     result = front;
@@ -278,7 +278,7 @@ vector<GLfloat> build_cube() {
     result.insert(end(result), begin(left), end(left));
     result.insert(end(result), begin(top), end(top));
     result.insert(end(result), begin(bottom), end(bottom));
-    
+
     return result;
 }
 
@@ -337,34 +337,36 @@ GLfloat* init_color() {
 
 void display_func() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
+
     // Perform display functions
-    
+
     glFlush();            //Finish rendering
     glutSwapBuffers();
 }
 
 
 int main (int argc, char **argv) {
+    print(build_cube());
+    
     // Initialize GLUT
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
     glutInitWindowSize(800, 600);
     // Create a window with rendering context and everything else we need
     glutCreateWindow("Assignment 2");
-    
+
     setup();
     init_camera();
-    
+
     // Set up our display function
     glutDisplayFunc(display_func);
     // Render our world
     glutMainLoop();
-    
+
     // Remember to call "delete" on your dynmically allocated arrays
     // such that you don't suffer from memory leaks. e.g.
     // delete arr;
-    
+
     return 0;
 }
 
@@ -477,3 +479,35 @@ int main (int argc, char **argv) {
 //    glFlush();            //Finish rendering
 //    glutSwapBuffers();
 //}
+
+
+//1, 1, 1,
+//-1, 1, 1,
+//-1, -1, 1,
+//1, -1, 1,
+//
+//-1, 1, -1,
+//1, 1, -1,
+//1, -1, -1,
+//-1, -1, -1,
+//
+//1, 1, -1,
+//1, 1, 1,
+//1, -1, 1,
+//1, -1, -1,
+//
+//-1, 1, 1,
+//-1, 1, -1,
+//-1, -1, -1,
+//-1, -1, 1,
+//
+//1, 1, -1,
+//-1, 1, -1,
+//-1, 1, 1,
+//1, 1, 1,
+//
+//1, -1, 1,
+//-1, -1, 1,
+//-1, -1, -1,
+//1, -1, -1
+
