@@ -309,40 +309,97 @@ void setup() {
     glClearColor(1.0, 1.0, 1.0, 0.0);
 }
 
-//void init_camera() {
-//    // Camera parameters
-//    glMatrixMode(GL_PROJECTION);
-//    glLoadIdentity();
-//    // Define a 50 degree field of view, 1:1 aspect ratio, near and far planes at 3 and 7
-//    gluPerspective(50.0, 1.0, 2.0, 10.0);
-//    // Position camera at (2, 3, 5), attention at (0, 0, 0), up at (0, 1, 0)
-//    gluLookAt(2.0, 6.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-//}
-
+// Init camara
 void init_camera() {
     // Camera parameters
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
+    // Define a 50 degree field of view, 1:1 aspect ratio, near and far planes at 3 and 7
+    gluPerspective(50.0, 1.0, 2.0, 10.0);
+    // Position camera at (2, 3, 5), attention at (0, 0, 0), up at (0, 1, 0)
+    gluLookAt(2.0, 6.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 }
 
-// Construct the scene using objects built from cubes/prisms
-GLfloat* init_scene() {
-    return nullptr;
-}
 
-// Construct the color mapping of the scene
-GLfloat* init_color() {
-    return nullptr;
-}
+//// Construct the scene using objects built from cubes/prisms
+//GLfloat* init_scene() {
+//    return nullptr;
+//}
+//
+//// Construct the color mapping of the scene
+//GLfloat* init_color() {
+//    return nullptr;
+//}
+
 
 void display_func() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    // Perform display functions
-
+    
+    // World model parameters
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    
+    GLfloat* vertices= vector2array(build_cube());
+    
+    GLfloat colors[] = {
+        // Front plane
+        1.0,    0.0,    0.0,
+        1.0,    0.0,    0.0,
+        1.0,    0.0,    0.0,
+        1.0,    0.0,    0.0,
+        // Back plane
+        0.0,    1.0,    0.0,
+        0.0,    1.0,    0.0,
+        0.0,    1.0,    0.0,
+        0.0,    1.0,    0.0,
+        // Right
+        0.0,    0.0,    1.0,
+        0.0,    0.0,    1.0,
+        0.0,    0.0,    1.0,
+        0.0,    0.0,    1.0,
+        // Left
+        1.0,    1.0,    0.0,
+        1.0,    1.0,    0.0,
+        1.0,    1.0,    0.0,
+        1.0,    1.0,    0.0,
+        // Top
+        1.0,    0.0,    1.0,
+        1.0,    0.0,    1.0,
+        1.0,    0.0,    1.0,
+        1.0,    0.0,    1.0,
+        // Bottom
+        0.0,    1.0,    1.0,
+        0.0,    1.0,    1.0,
+        0.0,    1.0,    1.0,
+        0.0,    1.0,    1.0,
+    };
+    
+    glVertexPointer(3,          // 3 components (x, y, z)
+                    GL_FLOAT,   // Vertex type is GL_FLOAT
+                    0,          // Start position in referenced memory
+                    vertices);  // Pointer to memory location to read from
+    
+    //pass the color pointer
+    glColorPointer(3,           // 3 components (r, g, b)
+                   GL_FLOAT,    // Vertex type is GL_FLOAT
+                   0,           // Start position in referenced memory
+                   colors);     // Pointer to memory location to read from
+    
+    // Draw quad point planes: each 4 vertices
+    glDrawArrays(GL_QUADS, 0, 4*6);
+    
     glFlush();            //Finish rendering
     glutSwapBuffers();
 }
+
+//void display_func() {
+//    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//
+//    // Perform display functions
+//
+//    glFlush();            //Finish rendering
+//    glutSwapBuffers();
+//}
 
 
 int main (int argc, char **argv) {
