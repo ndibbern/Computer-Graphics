@@ -56,15 +56,15 @@ static void print(vector<GLfloat> result) {
 // Initializes a square plane of unit lengths
 vector<GLfloat> init_plane() {
     vector<GLfloat> vertices = {
-//        +0.5,   +0.5,   +0.0,
-//        -0.5,   +0.5,   +0.0,
-//        -0.5,   -0.5,   +0.0,
-//        +0.5,   -0.5,   +0.0,
-//
-        +1,   +1,   +0.0,
-        -1,   +1,   +0.0,
-        -1,   -1,   +0.0,
-        +1,   -1,   +0.0,
+        +0.5,   +0.5,   +0.0,
+        -0.5,   +0.5,   +0.0,
+        -0.5,   -0.5,   +0.0,
+        +0.5,   -0.5,   +0.0,
+
+//        +1,   +1,   +0.0,
+//        -1,   +1,   +0.0,
+//        -1,   -1,   +0.0,
+//        +1,   -1,   +0.0,
     };
     return vertices;
 }
@@ -264,12 +264,12 @@ vector<GLfloat> build_cube() {
 
     vector<GLfloat> initial_plane = init_plane();
     // Creates a unit cube by transforming a set of planes. We do transformations in homogeneous but then transform back to cartesian
-    vector<GLfloat> front  = (mult_many_points(translation_matrix(0,0,1), initial_plane));
-    vector<GLfloat> back   = (mult_many_points(translation_matrix(0,0,-1), (mult_many_points(rotation_matrix_y(d2r(180)), initial_plane))));
-    vector<GLfloat> right   = (mult_many_points(translation_matrix(1,0,0), (mult_many_points(rotation_matrix_y(d2r( 90)), initial_plane))));
-    vector<GLfloat> left   = (mult_many_points(translation_matrix(-1,0,0), (mult_many_points(rotation_matrix_y(d2r(-90)), initial_plane))));
-    vector<GLfloat> bottom   = (mult_many_points(translation_matrix(0,-1,0), (mult_many_points(rotation_matrix_x(d2r( 90)), initial_plane))));
-    vector<GLfloat> top   = (mult_many_points(translation_matrix(0,1,0), (mult_many_points(rotation_matrix_x(d2r(-90)), initial_plane))));
+    vector<GLfloat> front  = (mult_many_points(translation_matrix(0,0,0.5), initial_plane));
+    vector<GLfloat> back   = (mult_many_points(translation_matrix(0,0,-0.5), (mult_many_points(rotation_matrix_y(d2r(180)), initial_plane))));
+    vector<GLfloat> right   = (mult_many_points(translation_matrix(0.5,0,0), (mult_many_points(rotation_matrix_y(d2r( 90)), initial_plane))));
+    vector<GLfloat> left   = (mult_many_points(translation_matrix(-0.5,0,0), (mult_many_points(rotation_matrix_y(d2r(-90)), initial_plane))));
+    vector<GLfloat> bottom   = (mult_many_points(translation_matrix(0,-0.5,0), (mult_many_points(rotation_matrix_x(d2r( 90)), initial_plane))));
+    vector<GLfloat> top   = (mult_many_points(translation_matrix(0,0.5,0), (mult_many_points(rotation_matrix_x(d2r(-90)), initial_plane))));
 
     // concatenate into one long vector
     vector<GLfloat> result;
@@ -348,7 +348,7 @@ void display_func() {
     vector<GLfloat> cube = build_cube();
     vector<GLfloat> plane = init_plane();
     vector<GLfloat> id = identity();
-    vector<GLfloat> scaled = mult_many_points(mult_many_points(scaling_matrix(2,0.1,1),  cube));
+    vector<GLfloat> scaled = mult_many_points(translation_matrix(0,2,0), mult_many_points(scaling_matrix(2,0.1,1),  cube));
     print(scaled);
     cout << scaled.size() << '\n';
     GLfloat* vertices = vector2array(scaled);
