@@ -26,6 +26,7 @@
 
 #include <math.h>
 #include <vector>
+#include <random>
 #include <iostream>
 using namespace std;
 
@@ -251,7 +252,6 @@ vector<GLfloat> mult_many_points(vector<GLfloat> transformation_matrix, vector<G
     
     for (double i = 0; i <int(nb_points/3); i ++){
         vector<GLfloat> point(points.begin()+i*3, points.begin()+i*3+3);
-        print(point);
         homogeneous_point = to_homogenous_coord(point);
         mult_result = to_cartesian_coord(mat_mult(transformation_matrix, homogeneous_point));
         result.insert(end(result), begin(mult_result), end(mult_result));
@@ -323,18 +323,34 @@ void init_camera() {
 }
 
 
-//// Construct the scene using objects built from cubes/prisms
-//GLfloat* init_scene() {
-//    vector<GLfloat> cube = build_cube();
-//    vector<GLfloat> scaled = mult_many_points(scaling_matrix(1,0.5,1),  cube);
-//    GLfloat* result = vector2array(cube);
-//    return result;
-//}
+// Construct the scene using objects built from cubes/prisms
+GLfloat* init_scene() {
+    vector<GLfloat> cube = build_cube();
+    vector<GLfloat> plane = init_plane();
+    vector<GLfloat> id = identity();
+    vector<GLfloat> result = mult_many_points(translation_matrix(0,2,0), mult_many_points(scaling_matrix(2,0.1,1),  cube));
+    return vector2array(result);
+}
+// Generate random value
+
+GLfloat random(float start, float end){
+    random_device rd;
+    default_random_engine generator(rd()); // rd() provides a random seed
+    uniform_real_distribution<double> distribution(start,end);
+    GLfloat number = (GLfloat) distribution(generator);
+    return number;
+}
 
 // Construct the color mapping of the scene
-//GLfloat* init_color() {
-//    return nullptr;
-//}
+GLfloat* init_color(int sides_nb) {
+    vector<GLfloat> final_vector;
+    GLfloat rand;
+    for(int i=0; i < sides_nb*12; i++){
+        rand = random(0.1,1);
+        final_vector.push_back(rand);
+    }
+    return vector2array(final_vector);
+}
 
 
 void display_func() {
@@ -345,48 +361,8 @@ void display_func() {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     
-    vector<GLfloat> cube = build_cube();
-    vector<GLfloat> plane = init_plane();
-    vector<GLfloat> id = identity();
-    vector<GLfloat> scaled = mult_many_points(translation_matrix(0,2,0), mult_many_points(scaling_matrix(2,0.1,1),  cube));
-    print(scaled);
-    cout << scaled.size() << '\n';
-    GLfloat* vertices = vector2array(scaled);
-    
-//    GLfloat* vertices= vector2array(build_cube());
-    
-    GLfloat colors[] = {
-        // Front plane
-        1.0,    0.0,    0.0,
-        1.0,    0.0,    0.0,
-        1.0,    0.0,    0.0,
-        1.0,    0.0,    0.0,
-        // Back plane
-        0.0,    1.0,    0.0,
-        0.0,    1.0,    0.0,
-        0.0,    1.0,    0.0,
-        0.0,    1.0,    0.0,
-        // Right
-        0.0,    0.0,    1.0,
-        0.0,    0.0,    1.0,
-        0.0,    0.0,    1.0,
-        0.0,    0.0,    1.0,
-        // Left
-        1.0,    1.0,    0.0,
-        1.0,    1.0,    0.0,
-        1.0,    1.0,    0.0,
-        1.0,    1.0,    0.0,
-        // Top
-        1.0,    0.0,    1.0,
-        1.0,    0.0,    1.0,
-        1.0,    0.0,    1.0,
-        1.0,    0.0,    1.0,
-        // Bottom
-        0.0,    1.0,    1.0,
-        0.0,    1.0,    1.0,
-        0.0,    1.0,    1.0,
-        0.0,    1.0,    1.0,
-    };
+    GLfloat* vertices = init_scene();
+    GLfloat* colors = init_color(sides_nb);
     
     glVertexPointer(3,          // 3 components (x, y, z)
                     GL_FLOAT,   // Vertex type is GL_FLOAT
@@ -404,6 +380,9 @@ void display_func() {
     
     glFlush();            //Finish rendering
     glutSwapBuffers();
+    
+    delete vertices;
+    delete colors;
 }
 
 //void display_func() {
@@ -417,7 +396,6 @@ void display_func() {
 
 
 int main (int argc, char **argv) {
-    //print(build_cube());
     
     // Initialize GLUT
     glutInit(&argc, argv);
