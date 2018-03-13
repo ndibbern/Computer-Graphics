@@ -348,10 +348,10 @@ void display_func() {
     vector<GLfloat> cube = build_cube();
     vector<GLfloat> plane = init_plane();
     vector<GLfloat> id = identity();
-    vector<GLfloat> scaled = to_cartesian_coord(mult_many_points(id,  cube));
+    vector<GLfloat> scaled = mult_many_points(mult_many_points(scaling_matrix(2,0.1,1),  cube));
     print(scaled);
     cout << scaled.size() << '\n';
-    GLfloat* vertices = vector2array(cube);
+    GLfloat* vertices = vector2array(scaled);
     
 //    GLfloat* vertices= vector2array(build_cube());
     
