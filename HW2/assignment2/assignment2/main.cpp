@@ -244,14 +244,14 @@ vector<GLfloat> mat_mult(vector<GLfloat> A, vector<GLfloat> B) {
 }
 
 //// Performs matrix multiplication with given matrix and outputs a long concatenated vector with each point
-vector<GLfloat> multiply_by_init_plane(vector<GLfloat> transformation_matrix1, vector<GLfloat> transformation_matrix) {
-    vector<GLfloat> result, homogeneous_plane_point, mult_result;
-    vector<GLfloat> plane = init_plane();
-
-    for (int i = 0; i <=9; i += 3){
-        vector<GLfloat> plane_point(plane.begin()+i, plane.begin()+i+3);
-        homogeneous_plane_point = to_homogenous_coord(plane_point);
-        mult_result = mat_mult(transformation_matrix1, mat_mult(transformation_matrix, homogeneous_plane_point));
+vector<GLfloat> mult_many_points(vector<GLfloat> transformation_matrix, vector<GLfloat> points) {
+    vector<GLfloat> result, homogeneous_point, mult_result;
+    int nb_points = int(points.size());
+    
+    for (int i = 0; i <nb_points; i += 3){
+        vector<GLfloat> point(points.begin()+i, points.begin()+i+3);
+        homogeneous_point = to_homogenous_coord(point);
+        mult_result = mat_mult(transformation_matrix, homogeneous_point);
         result.insert(end(result), begin(mult_result), end(mult_result));
     }
     return result;
@@ -260,15 +260,14 @@ vector<GLfloat> multiply_by_init_plane(vector<GLfloat> transformation_matrix1, v
 // Builds a unit cube centered at the origin
 vector<GLfloat> build_cube() {
 
-    vector<GLfloat> init_plane_in_homogeneous = to_homogenous_coord(init_plane());
-
+    vector<GLfloat> initial_plane = init_plane();
     // Creates a unit cube by transforming a set of planes. We do transformations in homogeneous but then transform back to cartesian
-    vector<GLfloat> front  = to_cartesian_coord(multiply_by_init_plane(identity(), translation_matrix(0,0,1)));
-    vector<GLfloat> back   = to_cartesian_coord(multiply_by_init_plane(translation_matrix(0,0,-1), rotation_matrix_y(d2r(180))));
-    vector<GLfloat> right  = to_cartesian_coord(multiply_by_init_plane(translation_matrix(1,0,0),  rotation_matrix_y(d2r( 90))));
-    vector<GLfloat> left   = to_cartesian_coord(multiply_by_init_plane(translation_matrix(-1,0,0),  rotation_matrix_y(d2r(-90))));
-    vector<GLfloat> bottom = to_cartesian_coord(multiply_by_init_plane(translation_matrix(0,-1,0), rotation_matrix_x(d2r( 90))));
-    vector<GLfloat> top    = to_cartesian_coord(multiply_by_init_plane(translation_matrix(0,1,0),  rotation_matrix_x(d2r(-90))));
+    vector<GLfloat> front  = to_cartesian_coord(mult_many_points(translation_matrix(0,0,1), initial_plane));
+    vector<GLfloat> back   = to_cartesian_coord(mult_many_points(translation_matrix(0,0,-1), to_cartesian_coord(mult_many_points(rotation_matrix_y(d2r(180)), initial_plane))));
+    vector<GLfloat> right   = to_cartesian_coord(mult_many_points(translation_matrix(1,0,0), to_cartesian_coord(mult_many_points(rotation_matrix_y(d2r( 90)), initial_plane))));
+    vector<GLfloat> left   = to_cartesian_coord(mult_many_points(translation_matrix(-1,0,0), to_cartesian_coord(mult_many_points(rotation_matrix_y(d2r(-90)), initial_plane))));
+    vector<GLfloat> bottom   = to_cartesian_coord(mult_many_points(translation_matrix(0,-1,0), to_cartesian_coord(mult_many_points(rotation_matrix_x(d2r( 90)), initial_plane))));
+    vector<GLfloat> top   = to_cartesian_coord(mult_many_points(translation_matrix(0,1,0), to_cartesian_coord(mult_many_points(rotation_matrix_x(d2r(-90)), initial_plane))));
 
     // concatenate into one long vector
     vector<GLfloat> result;
@@ -281,6 +280,7 @@ vector<GLfloat> build_cube() {
 
     return result;
 }
+
 
 /**************************************************
  *            Camera and World Modeling           *
