@@ -246,12 +246,14 @@ vector<GLfloat> mat_mult(vector<GLfloat> A, vector<GLfloat> B) {
 //// Performs matrix multiplication with given matrix and outputs a long concatenated vector with each point
 vector<GLfloat> mult_many_points(vector<GLfloat> transformation_matrix, vector<GLfloat> points) {
     vector<GLfloat> result, homogeneous_point, mult_result;
-    int nb_points = int(points.size());
+    double nb_points = points.size();
+    cout << nb_points << '\n';
     
-    for (int i = 0; i <nb_points; i += 3){
-        vector<GLfloat> point(points.begin()+i, points.begin()+i+3);
+    for (double i = 0; i <int(nb_points/3); i ++){
+        vector<GLfloat> point(points.begin()+i*3, points.begin()+i*3+3);
+        print(point);
         homogeneous_point = to_homogenous_coord(point);
-        mult_result = mat_mult(transformation_matrix, homogeneous_point);
+        mult_result = to_cartesian_coord(mat_mult(transformation_matrix, homogeneous_point));
         result.insert(end(result), begin(mult_result), end(mult_result));
     }
     return result;
@@ -262,12 +264,12 @@ vector<GLfloat> build_cube() {
 
     vector<GLfloat> initial_plane = init_plane();
     // Creates a unit cube by transforming a set of planes. We do transformations in homogeneous but then transform back to cartesian
-    vector<GLfloat> front  = to_cartesian_coord(mult_many_points(translation_matrix(0,0,1), initial_plane));
-    vector<GLfloat> back   = to_cartesian_coord(mult_many_points(translation_matrix(0,0,-1), to_cartesian_coord(mult_many_points(rotation_matrix_y(d2r(180)), initial_plane))));
-    vector<GLfloat> right   = to_cartesian_coord(mult_many_points(translation_matrix(1,0,0), to_cartesian_coord(mult_many_points(rotation_matrix_y(d2r( 90)), initial_plane))));
-    vector<GLfloat> left   = to_cartesian_coord(mult_many_points(translation_matrix(-1,0,0), to_cartesian_coord(mult_many_points(rotation_matrix_y(d2r(-90)), initial_plane))));
-    vector<GLfloat> bottom   = to_cartesian_coord(mult_many_points(translation_matrix(0,-1,0), to_cartesian_coord(mult_many_points(rotation_matrix_x(d2r( 90)), initial_plane))));
-    vector<GLfloat> top   = to_cartesian_coord(mult_many_points(translation_matrix(0,1,0), to_cartesian_coord(mult_many_points(rotation_matrix_x(d2r(-90)), initial_plane))));
+    vector<GLfloat> front  = (mult_many_points(translation_matrix(0,0,1), initial_plane));
+    vector<GLfloat> back   = (mult_many_points(translation_matrix(0,0,-1), (mult_many_points(rotation_matrix_y(d2r(180)), initial_plane))));
+    vector<GLfloat> right   = (mult_many_points(translation_matrix(1,0,0), (mult_many_points(rotation_matrix_y(d2r( 90)), initial_plane))));
+    vector<GLfloat> left   = (mult_many_points(translation_matrix(-1,0,0), (mult_many_points(rotation_matrix_y(d2r(-90)), initial_plane))));
+    vector<GLfloat> bottom   = (mult_many_points(translation_matrix(0,-1,0), (mult_many_points(rotation_matrix_x(d2r( 90)), initial_plane))));
+    vector<GLfloat> top   = (mult_many_points(translation_matrix(0,1,0), (mult_many_points(rotation_matrix_x(d2r(-90)), initial_plane))));
 
     // concatenate into one long vector
     vector<GLfloat> result;
@@ -323,23 +325,35 @@ void init_camera() {
 
 //// Construct the scene using objects built from cubes/prisms
 //GLfloat* init_scene() {
-//    return nullptr;
+//    vector<GLfloat> cube = build_cube();
+//    vector<GLfloat> scaled = mult_many_points(scaling_matrix(1,0.5,1),  cube);
+//    GLfloat* result = vector2array(cube);
+//    return result;
 //}
-//
-//// Construct the color mapping of the scene
+
+// Construct the color mapping of the scene
 //GLfloat* init_color() {
 //    return nullptr;
 //}
 
 
 void display_func() {
+    int sides_nb = 6;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     // World model parameters
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     
-    GLfloat* vertices= vector2array(build_cube());
+    vector<GLfloat> cube = build_cube();
+    vector<GLfloat> plane = init_plane();
+    vector<GLfloat> id = identity();
+    vector<GLfloat> scaled = to_cartesian_coord(mult_many_points(id,  cube));
+    print(scaled);
+    cout << scaled.size() << '\n';
+    GLfloat* vertices = vector2array(cube);
+    
+//    GLfloat* vertices= vector2array(build_cube());
     
     GLfloat colors[] = {
         // Front plane
@@ -386,7 +400,7 @@ void display_func() {
                    colors);     // Pointer to memory location to read from
     
     // Draw quad point planes: each 4 vertices
-    glDrawArrays(GL_QUADS, 0, 4*6);
+    glDrawArrays(GL_QUADS, 0, 4*sides_nb);
     
     glFlush();            //Finish rendering
     glutSwapBuffers();
@@ -403,7 +417,7 @@ void display_func() {
 
 
 int main (int argc, char **argv) {
-    print(build_cube());
+    //print(build_cube());
     
     // Initialize GLUT
     glutInit(&argc, argv);
@@ -567,4 +581,3 @@ int main (int argc, char **argv) {
 //-1, -1, 1,
 //-1, -1, -1,
 //1, -1, -1
-
