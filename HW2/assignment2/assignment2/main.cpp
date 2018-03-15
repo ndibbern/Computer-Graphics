@@ -264,12 +264,12 @@ vector<GLfloat> build_cube() {
 
     vector<GLfloat> initial_plane = init_plane();
     // Creates a unit cube by transforming a set of planes. We do transformations in homogeneous but then transform back to cartesian
-    vector<GLfloat> front  = (mult_many_points(translation_matrix(0,0,0.5), initial_plane));
-    vector<GLfloat> back   = (mult_many_points(translation_matrix(0,0,-0.5), (mult_many_points(rotation_matrix_y(d2r(180)), initial_plane))));
-    vector<GLfloat> right   = (mult_many_points(translation_matrix(0.5,0,0), (mult_many_points(rotation_matrix_y(d2r( 90)), initial_plane))));
-    vector<GLfloat> left   = (mult_many_points(translation_matrix(-0.5,0,0), (mult_many_points(rotation_matrix_y(d2r(-90)), initial_plane))));
-    vector<GLfloat> bottom   = (mult_many_points(translation_matrix(0,-0.5,0), (mult_many_points(rotation_matrix_x(d2r( 90)), initial_plane))));
-    vector<GLfloat> top   = (mult_many_points(translation_matrix(0,0.5,0), (mult_many_points(rotation_matrix_x(d2r(-90)), initial_plane))));
+    vector<GLfloat> front = (mult_many_points(translation_matrix(0,0,0.5), initial_plane));
+    vector<GLfloat> back = (mult_many_points(translation_matrix(0,0,-0.5), (mult_many_points(rotation_matrix_y(d2r(180)), initial_plane))));
+    vector<GLfloat> right = (mult_many_points(translation_matrix(0.5,0,0), (mult_many_points(rotation_matrix_y(d2r( 90)), initial_plane))));
+    vector<GLfloat> left = (mult_many_points(translation_matrix(-0.5,0,0), (mult_many_points(rotation_matrix_y(d2r(-90)), initial_plane))));
+    vector<GLfloat> bottom = (mult_many_points(translation_matrix(0,-0.5,0), (mult_many_points(rotation_matrix_x(d2r( 90)), initial_plane))));
+    vector<GLfloat> top = (mult_many_points(translation_matrix(0,0.5,0), (mult_many_points(rotation_matrix_x(d2r(-90)), initial_plane))));
 
     // concatenate into one long vector
     vector<GLfloat> result;
@@ -325,14 +325,35 @@ void init_camera() {
 
 // Construct the scene using objects built from cubes/prisms
 GLfloat* init_scene() {
+    // declare scene and initialize cube
     vector<GLfloat> scene;
     vector<GLfloat> cube = build_cube();
+    
+    // Create table
+    vector<GLfloat> table;
     vector<GLfloat> table_top = mult_many_points(translation_matrix(0,2,0), mult_many_points(scaling_matrix(2,0.1,1),   cube));
     vector<GLfloat> table_leg = mult_many_points(translation_matrix(0.5,1,0), mult_many_points(scaling_matrix(0.1,2,0.1), cube));
     vector<GLfloat> table_leg2 = mult_many_points(translation_matrix(-0.5,1,0), mult_many_points(scaling_matrix(0.1,2,0.1), cube));
-    scene = table_top;
-    scene.insert(end(scene), begin(table_leg), end(table_leg));
-    scene.insert(end(scene), begin(table_leg2), end(table_leg2));
+    table = table_top;
+    table.insert(end(table), begin(table_leg), end(table_leg));
+    table.insert(end(table), begin(table_leg2), end(table_leg2));
+    
+    // Create chair
+    vector<GLfloat> chair;
+    vector<GLfloat> chair_back = mult_many_points(translation_matrix(0,2.1,-0.4), mult_many_points(scaling_matrix(1,1,0.1),   cube));
+    vector<GLfloat> chair_seat = mult_many_points(translation_matrix(0,1.6,0), mult_many_points(scaling_matrix(1,0.1,1),   cube));
+    vector<GLfloat> chair_leg = mult_many_points(translation_matrix(0.45,1.1,-0.4), mult_many_points(scaling_matrix(0.1,1,0.1), cube));
+    vector<GLfloat> chair_leg2 = mult_many_points(translation_matrix(-0.45,1.1,-0.4), mult_many_points(scaling_matrix(0.1,1,0.1), cube));
+    vector<GLfloat> chair_leg3 = mult_many_points(translation_matrix(0.45,1.1,0.4), mult_many_points(scaling_matrix(0.1,1,0.1), cube));
+    vector<GLfloat> chair_leg4 = mult_many_points(translation_matrix(-0.45,1.1,0.4), mult_many_points(scaling_matrix(0.1,1,0.1), cube));
+    chair = chair_seat;
+    chair.insert(end(chair), begin(chair_leg), end(chair_leg));
+    chair.insert(end(chair), begin(chair_back), end(chair_back));
+    chair.insert(end(chair), begin(chair_leg2), end(chair_leg2));
+    chair.insert(end(chair), begin(chair_leg3), end(chair_leg3));
+    chair.insert(end(chair), begin(chair_leg4), end(chair_leg4));
+    
+    scene.insert(end(scene), begin(chair), end(chair));
     return vector2array(scene);
 }
 // Generate random value
@@ -358,7 +379,7 @@ GLfloat* init_color(int sides_nb) {
 
 
 void display_func() {
-    int sides_nb = 6*3;
+    int sides_nb = 6*6;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     // World model parameters
