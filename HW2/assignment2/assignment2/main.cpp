@@ -49,6 +49,8 @@ using namespace std;
  *                                                *
  *************************************************/
 
+float theta = 0.0;
+
 // Transforms from degrees to radians
 static double d2r(double d) {
     return (d / 180.0) * ((double) M_PI);
@@ -275,7 +277,7 @@ vector<GLfloat> build_cube() {
  *                                                *
  *************************************************/
 
-float theta = 0.0;
+float Theta = 0.0;
 
 void setup() {
     // Enable the vertex array functionality
@@ -300,8 +302,12 @@ void init_camera() {
     // Define a 50 degree field of view, 1:1 aspect ratio, near and far planes at 3 and 7
     gluPerspective(50.0, 1.0, 2.0, 10.0);
     // Position camera at (2, 3, 5), attention at (0, 0, 0), up at (0, 1, 0)
-    //gluLookAt(-3.0, 2.0, 6.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-    gluLookAt(-3.0, 5.0, -6.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    //gluLookAt(-3.0, 5.0, 6.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    //gluLookAt(-3.0, 5.0, -6.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    //gluLookAt(0.0, 5.0, -6.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    //gluLookAt(4, 5.0, -5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    gluLookAt(2.0, 6.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+
 }
 
 
@@ -314,8 +320,8 @@ GLfloat* init_scene() {
     // Create table
     vector<GLfloat> table;
     vector<GLfloat> table_top = mult_many_points(translation_matrix(0,2,0), mult_many_points(scaling_matrix(2,0.1,1),   cube));
-    vector<GLfloat> table_leg = mult_many_points(translation_matrix(0.5,1,0), mult_many_points(scaling_matrix(0.1,2,0.1), cube));
-    vector<GLfloat> table_leg2 = mult_many_points(translation_matrix(-0.5,1,0), mult_many_points(scaling_matrix(0.1,2,0.1), cube));
+    vector<GLfloat> table_leg = mult_many_points(translation_matrix(0.5,0.9,0), mult_many_points(scaling_matrix(0.1,2.1,0.1), cube));
+    vector<GLfloat> table_leg2 = mult_many_points(translation_matrix(-0.5,0.9,0), mult_many_points(scaling_matrix(0.1,2.1,0.1), cube));
     table = table_top;
     table.insert(end(table), begin(table_leg), end(table_leg));
     table.insert(end(table), begin(table_leg2), end(table_leg2));
@@ -362,6 +368,7 @@ GLfloat* init_scene() {
     monitor = screen;
     monitor.insert(end(monitor), begin(base), end(base));
     monitor.insert(end(monitor), begin(base_stick), end(base_stick));
+    monitor = mult_many_points(translation_matrix(0,0,0.5), monitor);
 
     // concat all objects on scene
     scene.insert(end(scene), begin(shelf), end(shelf));
@@ -381,25 +388,34 @@ GLfloat random(float start, float end){
     return number;
 }
 
-// Construct the color mapping of the scene
-GLfloat* init_color(int sides_nb) {
+vector<GLfloat> get_colors(int sides_nb){
     vector<GLfloat> final_vector;
     GLfloat rand; // I create my color vector with random values on a range, so I can have a sense of surface
     for(int i=0; i < sides_nb*12; i++){
         rand = random(0.1,0.4);
         final_vector.push_back(rand);
     }
-    return vector2array(final_vector);
+    return final_vector;
+}
+vector<GLfloat> color_vector = get_colors(6*18);
+
+// Construct the color mapping of the scene
+GLfloat* init_color(int sides_nb) {
+    return vector2array(color_vector);
 }
 
 
+
 void display_func() {
-    int sides_nb = 6*19; // 19 is the number of "cubes" I transformed, I do this to make sure I create the correct color size vector
+    int sides_nb = 6*18; // 19 is the number of "cubes" I transformed, I do this to make sure I create the correct color size vector
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     // World model parameters
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+    
+    //glRotatef(theta, 0.0, 1.0, 0.0);
+    glRotatef(theta, 0.0, 1.0, 0.0);
     
     GLfloat* vertices = init_scene();
     GLfloat* colors = init_color(sides_nb);
@@ -425,6 +441,11 @@ void display_func() {
     delete colors;
 }
 
+void idle_func() {
+    theta = theta+0.3;
+    display_func();
+}
+
 
 int main (int argc, char **argv) {
     
@@ -440,6 +461,7 @@ int main (int argc, char **argv) {
 
     // Set up our display function
     glutDisplayFunc(display_func);
+    glutIdleFunc(idle_func);
     // Render our world
     glutMainLoop();
 
