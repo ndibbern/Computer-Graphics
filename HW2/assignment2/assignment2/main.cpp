@@ -1,15 +1,25 @@
 /***
  Assignment-2: Geometric Modeling of a Scene
 
- Name: Wong, Alex (Please write your name in Last Name, First Name format)
+ Name: Dibbern, Natalia
 
- Collaborators: Doe, John; Doe, Jane
+ Collaborators: Just me myself and I
  ** Note: although the assignment should be completed individually
  you may speak with classmates on high level algorithmic concepts. Please
  list their names in this section
 
- Project Summary: A short paragraph (3-4 sentences) describing the work you
- did for the project.
+ Project Summary: In this work I recreate a scene of my room at college. As a CS major I spend
+                  most of my time at my desk using my screen doing CS projects. In this scenario, I also have a shelf next to my
+                  desk, where I keep my books, and I usually put a notebook at the very top. I decided to
+                  recreate this scene for this project because it is something that represents my daily life
+                  as a college student. All functions on this projects were writen by myself (no built in funtions
+                  used for the transformations). I coded up the transormation matrices as well as a the to homogeneous
+                  and to cartesian coordinates. I also coded a matrix multiplication function and a cube function.
+                  My cube function generates a unit cube centered at (0,0,0) based on an initial plane. I later use this
+                  cube multiple times and perform transformations to it to generate my other objects on my scene. The colors
+                  of my objects are generated as a random value between 0.1 and 0.5 for both three positions of each point. Because
+                  of this reason I do not get any cool surfaces colors but at least the randomnes allows for a gradient to show and hence
+                  give a sense of 3D object.
  ***/
 
 
