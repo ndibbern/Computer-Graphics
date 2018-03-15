@@ -325,11 +325,15 @@ void init_camera() {
 
 // Construct the scene using objects built from cubes/prisms
 GLfloat* init_scene() {
+    vector<GLfloat> scene;
     vector<GLfloat> cube = build_cube();
-    vector<GLfloat> plane = init_plane();
-    vector<GLfloat> id = identity();
-    vector<GLfloat> result = mult_many_points(translation_matrix(0,2,0), mult_many_points(scaling_matrix(2,0.1,1),  cube));
-    return vector2array(result);
+    vector<GLfloat> table_top = mult_many_points(translation_matrix(0,2,0), mult_many_points(scaling_matrix(2,0.1,1),   cube));
+    vector<GLfloat> table_leg = mult_many_points(translation_matrix(0.5,1,0), mult_many_points(scaling_matrix(0.1,2,0.1), cube));
+    vector<GLfloat> table_leg2 = mult_many_points(translation_matrix(-0.5,1,0), mult_many_points(scaling_matrix(0.1,2,0.1), cube));
+    scene = table_top;
+    scene.insert(end(scene), begin(table_leg), end(table_leg));
+    scene.insert(end(scene), begin(table_leg2), end(table_leg2));
+    return vector2array(scene);
 }
 // Generate random value
 
@@ -346,7 +350,7 @@ GLfloat* init_color(int sides_nb) {
     vector<GLfloat> final_vector;
     GLfloat rand;
     for(int i=0; i < sides_nb*12; i++){
-        rand = random(0.1,1);
+        rand = random(0.1,0.4);
         final_vector.push_back(rand);
     }
     return vector2array(final_vector);
@@ -354,7 +358,7 @@ GLfloat* init_color(int sides_nb) {
 
 
 void display_func() {
-    int sides_nb = 6;
+    int sides_nb = 6*3;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     // World model parameters
@@ -384,15 +388,6 @@ void display_func() {
     delete vertices;
     delete colors;
 }
-
-//void display_func() {
-//    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//
-//    // Perform display functions
-//
-//    glFlush();            //Finish rendering
-//    glutSwapBuffers();
-//}
 
 
 int main (int argc, char **argv) {
