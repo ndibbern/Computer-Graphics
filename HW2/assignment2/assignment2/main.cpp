@@ -319,7 +319,7 @@ void init_camera() {
     // Define a 50 degree field of view, 1:1 aspect ratio, near and far planes at 3 and 7
     gluPerspective(50.0, 1.0, 2.0, 10.0);
     // Position camera at (2, 3, 5), attention at (0, 0, 0), up at (0, 1, 0)
-    gluLookAt(-3.0, 6.0, -6.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    gluLookAt(-3.0, 5.0, -6.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 }
 
 
@@ -337,7 +337,7 @@ GLfloat* init_scene() {
     table = table_top;
     table.insert(end(table), begin(table_leg), end(table_leg));
     table.insert(end(table), begin(table_leg2), end(table_leg2));
-    table = mult_many_points (scaling_matrix(1.5,1,1.5),table);
+    table = mult_many_points(translation_matrix(0,-0.1,0),mult_many_points(scaling_matrix(1.5,0.9,1.5),table));
     
     // Create chair
     vector<GLfloat> chair;
@@ -353,7 +353,7 @@ GLfloat* init_scene() {
     chair.insert(end(chair), begin(chair_leg2), end(chair_leg2));
     chair.insert(end(chair), begin(chair_leg3), end(chair_leg3));
     chair.insert(end(chair), begin(chair_leg4), end(chair_leg4));
-    chair = mult_many_points(translation_matrix(-0.3,0,-1.5), chair);
+    chair = mult_many_points(translation_matrix(-0.3,-0.5,-1.5), chair);
     
     // create shelf
     vector<GLfloat> shelf;
@@ -367,10 +367,22 @@ GLfloat* init_scene() {
     shelf.insert(end(shelf), begin(shelf_bottom), end(shelf_bottom));
     shelf.insert(end(shelf), begin(shelf_left_side), end(shelf_left_side));
     shelf.insert(end(shelf), begin(shelf_right_side), end(shelf_right_side));
+    shelf = mult_many_points(translation_matrix(-0.1,-0.2,0), shelf);
     
+    // create notebook
+    vector<GLfloat> notebook = mult_many_points(translation_matrix(-2.13,1.7,0.4), mult_many_points(rotation_matrix_y(45),mult_many_points(scaling_matrix(0.6*1,0.6*0.1,0.6*1.2), cube)));
+    
+    
+    // create screen
+    vector<GLfloat> screen;
+    vector<GLfloat> screen_monitor = mult_many_points(translation_matrix(-2.13,1.7,0.4), mult_many_points(rotation_matrix_y(45),mult_many_points(scaling_matrix(1.0, 0.1,1.2), cube)));
+    
+    
+    // concat all objects on scene
     scene.insert(end(scene), begin(shelf), end(shelf));
     scene.insert(end(scene), begin(chair), end(chair));
     scene.insert(end(scene), begin(table), end(table));
+    scene.insert(end(scene), begin(notebook), end(notebook));
     return vector2array(scene);
 }
 // Generate random value
@@ -396,7 +408,7 @@ GLfloat* init_color(int sides_nb) {
 
 
 void display_func() {
-    int sides_nb = 6*14;
+    int sides_nb = 6*16;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     // World model parameters
@@ -451,144 +463,3 @@ int main (int argc, char **argv) {
 
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//void display_func() {
-//    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//
-//    // World model parameters
-//    glMatrixMode(GL_MODELVIEW);
-//    glLoadIdentity();
-//
-//    glRotatef(theta, 0.0, 1.0, 0.0);
-//    glRotatef(theta, 1.0, 0.0, 0.0);
-//
-//    GLfloat vertices[] = {
-//        // Front plane
-//        +1.0,   +1.0,   +1.0,
-//        -1.0,   +1.0,   +1.0,
-//        -1.0,   -1.0,   +1.0,
-//        +1.0,   -1.0,   +1.0,
-//        // Back plane
-//        +1.0,   +1.0,   -1.0,
-//        -1.0,   +1.0,   -1.0,
-//        -1.0,   -1.0,   -1.0,
-//        +1.0,   -1.0,   -1.0,
-//        // Right
-//        +1.0,   +1.0,   -1.0,
-//        +1.0,   +1.0,   +1.0,
-//        +1.0,   -1.0,   +1.0,
-//        +1.0,   -1.0,   -1.0,
-//        // Left
-//        -1.0,   +1.0,   -1.0,
-//        -1.0,   +1.0,   +1.0,
-//        -1.0,   -1.0,   +1.0,
-//        -1.0,   -1.0,   -1.0,
-//        // Top
-//        +1.0,   +1.0,   +1.0,
-//        -1.0,   +1.0,   +1.0,
-//        -1.0,   +1.0,   -1.0,
-//        +1.0,   +1.0,   -1.0,
-//        // Bottom
-//        +1.0,   -1.0,   +1.0,
-//        -1.0,   -1.0,   +1.0,
-//        -1.0,   -1.0,   -1.0,
-//        +1.0,   -1.0,   -1.0,
-//    };
-//
-//    GLfloat colors[] = {
-//        // Front plane
-//        1.0,    0.0,    0.0,
-//        1.0,    0.0,    0.0,
-//        1.0,    0.0,    0.0,
-//        1.0,    0.0,    0.0,
-//        // Back plane
-//        0.0,    1.0,    0.0,
-//        0.0,    1.0,    0.0,
-//        0.0,    1.0,    0.0,
-//        0.0,    1.0,    0.0,
-//        // Right
-//        0.0,    0.0,    1.0,
-//        0.0,    0.0,    1.0,
-//        0.0,    0.0,    1.0,
-//        0.0,    0.0,    1.0,
-//        // Left
-//        1.0,    1.0,    0.0,
-//        1.0,    1.0,    0.0,
-//        1.0,    1.0,    0.0,
-//        1.0,    1.0,    0.0,
-//        // Top
-//        1.0,    0.0,    1.0,
-//        1.0,    0.0,    1.0,
-//        1.0,    0.0,    1.0,
-//        1.0,    0.0,    1.0,
-//        // Bottom
-//        0.0,    1.0,    1.0,
-//        0.0,    1.0,    1.0,
-//        0.0,    1.0,    1.0,
-//        0.0,    1.0,    1.0,
-//    };
-//
-//    glVertexPointer(3,          // 3 components (x, y, z)
-//                    GL_FLOAT,   // Vertex type is GL_FLOAT
-//                    0,          // Start position in referenced memory
-//                    vertices);  // Pointer to memory location to read from
-//
-//    //pass the color pointer
-//    glColorPointer(3,           // 3 components (r, g, b)
-//                   GL_FLOAT,    // Vertex type is GL_FLOAT
-//                   0,           // Start position in referenced memory
-//                   colors);     // Pointer to memory location to read from
-//
-//    // Draw quad point planes: each 4 vertices
-//    glDrawArrays(GL_QUADS, 0, 4*6);
-//
-//    glFlush();            //Finish rendering
-//    glutSwapBuffers();
-//}
-
-
-//1, 1, 1,
-//-1, 1, 1,
-//-1, -1, 1,
-//1, -1, 1,
-//
-//-1, 1, -1,
-//1, 1, -1,
-//1, -1, -1,
-//-1, -1, -1,
-//
-//1, 1, -1,
-//1, 1, 1,
-//1, -1, 1,
-//1, -1, -1,
-//
-//-1, 1, 1,
-//-1, 1, -1,
-//-1, -1, -1,
-//-1, -1, 1,
-//
-//1, 1, -1,
-//-1, 1, -1,
-//-1, 1, 1,
-//1, 1, 1,
-//
-//1, -1, 1,
-//-1, -1, 1,
-//-1, -1, -1,
-//1, -1, -1
