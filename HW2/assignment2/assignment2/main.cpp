@@ -319,7 +319,7 @@ void init_camera() {
     // Define a 50 degree field of view, 1:1 aspect ratio, near and far planes at 3 and 7
     gluPerspective(50.0, 1.0, 2.0, 10.0);
     // Position camera at (2, 3, 5), attention at (0, 0, 0), up at (0, 1, 0)
-    gluLookAt(2.0, 6.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    gluLookAt(-3.0, 6.0, -6.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 }
 
 
@@ -353,7 +353,7 @@ GLfloat* init_scene() {
     chair.insert(end(chair), begin(chair_leg2), end(chair_leg2));
     chair.insert(end(chair), begin(chair_leg3), end(chair_leg3));
     chair.insert(end(chair), begin(chair_leg4), end(chair_leg4));
-    chair = mult_many_points(translation_matrix(-2,0,0), chair);
+    chair = mult_many_points(translation_matrix(-0.3,0,-1.5), chair);
     
     
     scene.insert(end(scene), begin(chair), end(chair));
