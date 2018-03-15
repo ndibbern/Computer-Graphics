@@ -355,7 +355,20 @@ GLfloat* init_scene() {
     chair.insert(end(chair), begin(chair_leg4), end(chair_leg4));
     chair = mult_many_points(translation_matrix(-0.3,0,-1.5), chair);
     
+    // create shelf
+    vector<GLfloat> shelf;
+    vector<GLfloat> shelf_top = mult_many_points(translation_matrix(-2,1,0.4), mult_many_points(scaling_matrix(1,0.1,1.2), cube));
+    vector<GLfloat> shelf_middle = mult_many_points(translation_matrix(-2,1.75,0.4), mult_many_points(scaling_matrix(1,0.1,1.2), cube));
+    vector<GLfloat> shelf_bottom = mult_many_points(translation_matrix(-2,0.25,0.4), mult_many_points(scaling_matrix(1,0.1,1.2), cube));
+    vector<GLfloat> shelf_left_side = mult_many_points(translation_matrix(-2.5,1,0.4), mult_many_points(scaling_matrix(0.1,1.6,1.2), cube));
+    vector<GLfloat> shelf_right_side = mult_many_points(translation_matrix(-1.5,1,0.4), mult_many_points(scaling_matrix(0.1,1.6,1.2), cube));
+    shelf = shelf_top;
+    shelf.insert(end(shelf), begin(shelf_middle), end(shelf_middle));
+    shelf.insert(end(shelf), begin(shelf_bottom), end(shelf_bottom));
+    shelf.insert(end(shelf), begin(shelf_left_side), end(shelf_left_side));
+    shelf.insert(end(shelf), begin(shelf_right_side), end(shelf_right_side));
     
+    scene.insert(end(scene), begin(shelf), end(shelf));
     scene.insert(end(scene), begin(chair), end(chair));
     scene.insert(end(scene), begin(table), end(table));
     return vector2array(scene);
@@ -383,7 +396,7 @@ GLfloat* init_color(int sides_nb) {
 
 
 void display_func() {
-    int sides_nb = 6*9;
+    int sides_nb = 6*14;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     // World model parameters
