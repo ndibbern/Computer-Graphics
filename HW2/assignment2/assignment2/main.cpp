@@ -61,11 +61,6 @@ vector<GLfloat> init_plane() {
         -0.5,   +0.5,   +0.0,
         -0.5,   -0.5,   +0.0,
         +0.5,   -0.5,   +0.0,
-
-//        +1,   +1,   +0.0,
-//        -1,   +1,   +0.0,
-//        -1,   -1,   +0.0,
-//        +1,   -1,   +0.0,
     };
     return vertices;
 }
@@ -92,34 +87,10 @@ GLfloat* vector2array(vector<GLfloat> vec) {
 vector<GLfloat> to_homogenous_coord(vector<GLfloat> cartesian_coords) {
     vector<GLfloat> result = cartesian_coords; // initialize with original coordinates
     // Append the 1 in the 4th dimension to generate homoegenous coordinates
-
-    // if it is a vector:
-    if (cartesian_coords.size() == 3) {
+    // The way I coded this, I will only send a vector every time
         result.push_back(1.00f);
         return result;
     }
-    // if it is a matrix that contains 4 points:
-    if (cartesian_coords.size() == 12) {
-        for (int i = 3; i <=12; i += 4){
-            result.insert(result.begin()+i, 1, 1.00f);
-        }
-        result.push_back(1.00);
-        return result;
-    }
-
-    // if it is a 3x3 matrix
-    for (int i = 3; i <=8; i += 4){
-        result.insert(result.begin()+i, 1, 0.00f);
-    }
-    // add last value
-    result.push_back(0.00f);
-    // add last row
-    result.push_back(0.00f);
-    result.push_back(0.00f);
-    result.push_back(0.00f);
-    result.push_back(1.00f);
-    return result;
-}
 
 
 // Converts Cartesian coordinates to homogeneous coordinates
@@ -244,7 +215,7 @@ vector<GLfloat> mat_mult(vector<GLfloat> A, vector<GLfloat> B) {
     return result;
 }
 
-//// Performs matrix multiplication with given matrix and outputs a long concatenated vector with each point
+// Performs matrix multiplication with given matrix and outputs a long concatenated vector with each point
 vector<GLfloat> mult_many_points(vector<GLfloat> transformation_matrix, vector<GLfloat> points) {
     vector<GLfloat> result, homogeneous_point, mult_result;
     double nb_points = points.size();
@@ -373,18 +344,15 @@ GLfloat* init_scene() {
     // create notebook
     vector<GLfloat> notebook = mult_many_points(translation_matrix(-2.13,1.65,0.4), mult_many_points(rotation_matrix_y(45),mult_many_points(scaling_matrix(0.6*1,0.6*0.1,0.6*1.2), cube)));
     
-    
     // create screen
     vector<GLfloat> monitor;
     vector<GLfloat> screen = mult_many_points(translation_matrix(-0.1,2.55,-0.2), mult_many_points(rotation_matrix_y(0),mult_many_points(scaling_matrix(1.4, 1,0.05), cube)));
     vector<GLfloat> base = mult_many_points(translation_matrix(-0.1,1.8,-0.2), mult_many_points(rotation_matrix_y(0),mult_many_points(scaling_matrix(0.6*1,0.6*0.1,0.6*1.2), cube)));
     vector<GLfloat> base_stick = mult_many_points(translation_matrix(-0.1,1.9,-0.2), mult_many_points(rotation_matrix_y(0),mult_many_points(scaling_matrix(0.6*0.1,0.6*0.5,0.6*0.1), cube)));
-
     monitor = screen;
     monitor.insert(end(monitor), begin(base), end(base));
     monitor.insert(end(monitor), begin(base_stick), end(base_stick));
 
-    
     // concat all objects on scene
     scene.insert(end(scene), begin(shelf), end(shelf));
     scene.insert(end(scene), begin(chair), end(chair));
@@ -406,7 +374,7 @@ GLfloat random(float start, float end){
 // Construct the color mapping of the scene
 GLfloat* init_color(int sides_nb) {
     vector<GLfloat> final_vector;
-    GLfloat rand;
+    GLfloat rand; // I create my color vector with random values on a range, so I can have a sense of surface
     for(int i=0; i < sides_nb*12; i++){
         rand = random(0.1,0.4);
         final_vector.push_back(rand);
@@ -416,7 +384,7 @@ GLfloat* init_color(int sides_nb) {
 
 
 void display_func() {
-    int sides_nb = 6*19;
+    int sides_nb = 6*19; // 19 is the number of "cubes" I transformed, I do this to make sure I create the correct color size vector
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     // World model parameters
