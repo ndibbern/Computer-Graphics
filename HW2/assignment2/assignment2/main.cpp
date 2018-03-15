@@ -319,6 +319,7 @@ void init_camera() {
     // Define a 50 degree field of view, 1:1 aspect ratio, near and far planes at 3 and 7
     gluPerspective(50.0, 1.0, 2.0, 10.0);
     // Position camera at (2, 3, 5), attention at (0, 0, 0), up at (0, 1, 0)
+    //gluLookAt(-3.0, 2.0, 6.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
     gluLookAt(-3.0, 5.0, -6.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 }
 
@@ -370,19 +371,26 @@ GLfloat* init_scene() {
     shelf = mult_many_points(translation_matrix(-0.1,-0.2,0), shelf);
     
     // create notebook
-    vector<GLfloat> notebook = mult_many_points(translation_matrix(-2.13,1.7,0.4), mult_many_points(rotation_matrix_y(45),mult_many_points(scaling_matrix(0.6*1,0.6*0.1,0.6*1.2), cube)));
+    vector<GLfloat> notebook = mult_many_points(translation_matrix(-2.13,1.65,0.4), mult_many_points(rotation_matrix_y(45),mult_many_points(scaling_matrix(0.6*1,0.6*0.1,0.6*1.2), cube)));
     
     
     // create screen
-    vector<GLfloat> screen;
-    vector<GLfloat> screen_monitor = mult_many_points(translation_matrix(-2.13,1.7,0.4), mult_many_points(rotation_matrix_y(45),mult_many_points(scaling_matrix(1.0, 0.1,1.2), cube)));
-    
+    vector<GLfloat> monitor;
+    vector<GLfloat> screen = mult_many_points(translation_matrix(-0.1,2.55,-0.2), mult_many_points(rotation_matrix_y(0),mult_many_points(scaling_matrix(1.4, 1,0.05), cube)));
+    vector<GLfloat> base = mult_many_points(translation_matrix(-0.1,1.8,-0.2), mult_many_points(rotation_matrix_y(0),mult_many_points(scaling_matrix(0.6*1,0.6*0.1,0.6*1.2), cube)));
+    vector<GLfloat> base_stick = mult_many_points(translation_matrix(-0.1,1.9,-0.2), mult_many_points(rotation_matrix_y(0),mult_many_points(scaling_matrix(0.6*0.1,0.6*0.5,0.6*0.1), cube)));
+
+    monitor = screen;
+    monitor.insert(end(monitor), begin(base), end(base));
+    monitor.insert(end(monitor), begin(base_stick), end(base_stick));
+
     
     // concat all objects on scene
     scene.insert(end(scene), begin(shelf), end(shelf));
     scene.insert(end(scene), begin(chair), end(chair));
     scene.insert(end(scene), begin(table), end(table));
     scene.insert(end(scene), begin(notebook), end(notebook));
+    scene.insert(end(scene), begin(monitor), end(monitor));
     return vector2array(scene);
 }
 // Generate random value
@@ -408,7 +416,7 @@ GLfloat* init_color(int sides_nb) {
 
 
 void display_func() {
-    int sides_nb = 6*16;
+    int sides_nb = 6*19;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     // World model parameters
