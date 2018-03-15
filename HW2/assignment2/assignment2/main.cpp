@@ -337,6 +337,7 @@ GLfloat* init_scene() {
     table = table_top;
     table.insert(end(table), begin(table_leg), end(table_leg));
     table.insert(end(table), begin(table_leg2), end(table_leg2));
+    table = mult_many_points (scaling_matrix(1.5,1,1.5),table);
     
     // Create chair
     vector<GLfloat> chair;
@@ -352,8 +353,11 @@ GLfloat* init_scene() {
     chair.insert(end(chair), begin(chair_leg2), end(chair_leg2));
     chair.insert(end(chair), begin(chair_leg3), end(chair_leg3));
     chair.insert(end(chair), begin(chair_leg4), end(chair_leg4));
+    chair = mult_many_points(translation_matrix(-2,0,0), chair);
+    
     
     scene.insert(end(scene), begin(chair), end(chair));
+    scene.insert(end(scene), begin(table), end(table));
     return vector2array(scene);
 }
 // Generate random value
@@ -379,7 +383,7 @@ GLfloat* init_color(int sides_nb) {
 
 
 void display_func() {
-    int sides_nb = 6*6;
+    int sides_nb = 6*9;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     // World model parameters
