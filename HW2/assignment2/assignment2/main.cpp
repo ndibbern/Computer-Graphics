@@ -320,11 +320,15 @@ GLfloat* init_scene() {
     // Create table
     vector<GLfloat> table;
     vector<GLfloat> table_top = mult_many_points(translation_matrix(0,2,0), mult_many_points(scaling_matrix(2,0.1,1),   cube));
-    vector<GLfloat> table_leg = mult_many_points(translation_matrix(0.5,0.9,0), mult_many_points(scaling_matrix(0.1,2.1,0.1), cube));
-    vector<GLfloat> table_leg2 = mult_many_points(translation_matrix(-0.5,0.9,0), mult_many_points(scaling_matrix(0.1,2.1,0.1), cube));
+    vector<GLfloat> table_leg = mult_many_points(translation_matrix(0.9,0.9,0.4), mult_many_points(scaling_matrix(0.1,2.1,0.1), cube));
+    vector<GLfloat> table_leg2 = mult_many_points(translation_matrix(-0.9,0.9,0.4), mult_many_points(scaling_matrix(0.1,2.1,0.1), cube));
+    vector<GLfloat> table_leg3 = mult_many_points(translation_matrix(0.9,0.9,-0.4), mult_many_points(scaling_matrix(0.1,2.1,0.1), cube));
+    vector<GLfloat> table_leg4 = mult_many_points(translation_matrix(-0.9,0.9,-0.4), mult_many_points(scaling_matrix(0.1,2.1,0.1), cube));
     table = table_top;
     table.insert(end(table), begin(table_leg), end(table_leg));
     table.insert(end(table), begin(table_leg2), end(table_leg2));
+    table.insert(end(table), begin(table_leg3), end(table_leg3));
+    table.insert(end(table), begin(table_leg4), end(table_leg4));
     table = mult_many_points(translation_matrix(0,-0.1,0),mult_many_points(scaling_matrix(1.5,0.9,1.5),table));
     
     // Create chair
@@ -397,7 +401,7 @@ vector<GLfloat> get_colors(int sides_nb){
     }
     return final_vector;
 }
-vector<GLfloat> color_vector = get_colors(6*18);
+vector<GLfloat> color_vector = get_colors(6*20);
 
 // Construct the color mapping of the scene
 GLfloat* init_color(int sides_nb) {
@@ -407,7 +411,7 @@ GLfloat* init_color(int sides_nb) {
 
 
 void display_func() {
-    int sides_nb = 6*18; // 19 is the number of "cubes" I transformed, I do this to make sure I create the correct color size vector
+    int sides_nb = 6*20; // 20 is the number of "cubes" I transformed, I do this to make sure I create the correct color size vector
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     // World model parameters
