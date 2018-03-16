@@ -415,7 +415,7 @@ void display_func() {
     glLoadIdentity();
     
     //glRotatef(theta, 0.0, 1.0, 0.0);
-    glRotatef(theta, 0.0, 1.0, 0.0);
+    glRotatef(theta, 0.0, 1, 0.0);
     
     GLfloat* vertices = init_scene();
     GLfloat* colors = init_color(sides_nb);
@@ -442,7 +442,7 @@ void display_func() {
 }
 
 void idle_func() {
-    theta = theta+0.3;
+    theta = theta+0.5;
     display_func();
 }
 
