@@ -1,25 +1,25 @@
 /***
  Assignment-2: Geometric Modeling of a Scene
-
+ 
  Name: Dibbern, Natalia
-
+ 
  Collaborators: Just me myself and I
  ** Note: although the assignment should be completed individually
  you may speak with classmates on high level algorithmic concepts. Please
  list their names in this section
-
+ 
  Project Summary: In this work I recreate a scene of my room at college. As a CS major I spend
-                  most of my time at my desk using my screen doing CS projects. In this scenario, I also have a shelf next to my
-                  desk, where I keep my books, and I usually put a notebook at the very top. I decided to
-                  recreate this scene for this project because it is something that represents my daily life
-                  as a college student. All functions on this projects were writen by myself (no built in funtions
-                  used for the transformations). I coded up the transormation matrices as well as a the to homogeneous
-                  and to cartesian coordinates. I also coded a matrix multiplication function and a cube function.
-                  My cube function generates a unit cube centered at (0,0,0) based on an initial plane. I later use this
-                  cube multiple times and perform transformations to it to generate my other objects on my scene. The colors
-                  of my objects are generated as a random value between 0.1 and 0.5 for both three positions of each point. Because
-                  of this reason I do not get any cool surfaces colors but at least the randomnes allows for a gradient to show and hence
-                  give a sense of 3D object.
+ most of my time at my desk using my screen doing CS projects. In this scenario, I also have a shelf next to my
+ desk, where I keep my books, and I usually put a notebook at the very top. I decided to
+ recreate this scene for this project because it is something that represents my daily life
+ as a college student. All functions on this projects were writen by myself (no built in funtions
+ used for the transformations). I coded up the transormation matrices as well as a the to homogeneous
+ and to cartesian coordinates. I also coded a matrix multiplication function and a cube function.
+ My cube function generates a unit cube centered at (0,0,0) based on an initial plane. I later use this
+ cube multiple times and perform transformations to it to generate my other objects on my scene. The colors
+ of my objects are generated as a random value between 0.1 and 0.5 for both three positions of each point. Because
+ of this reason I do not get any cool surfaces colors but at least the randomnes allows for a gradient to show and hence
+ give a sense of 3D object.
  ***/
 
 
@@ -59,11 +59,11 @@ static double d2r(double d) {
 // Prints a vector
 
 static void print(vector<GLfloat> result) {
-        vector<GLfloat>::iterator it;
-            cout << "myvector contains:";
-            for (it = result.begin(); it<result.end(); it++)
-                cout << ' ' << *it;
-            cout << '\n';
+    vector<GLfloat>::iterator it;
+    cout << "myvector contains:";
+    for (it = result.begin(); it<result.end(); it++)
+        cout << ' ' << *it;
+    cout << '\n';
 }
 
 // Initializes a square plane of unit lengths
@@ -80,9 +80,9 @@ vector<GLfloat> init_plane() {
 // Initializes the 4x4 identity matrix
 vector<GLfloat> identity() {
     vector<GLfloat> vertices = {1, 0, 0, 0,
-                               0, 1, 0, 0,
-                               0, 0, 1, 0,
-                               0, 0, 0, 1};
+        0, 1, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1};
     return vertices;
 }
 
@@ -100,23 +100,23 @@ vector<GLfloat> to_homogenous_coord(vector<GLfloat> cartesian_coords) {
     vector<GLfloat> result = cartesian_coords; // initialize with original coordinates
     // Append the 1 in the 4th dimension to generate homoegenous coordinates
     // The way I coded this, I will only send a vector every time
-        result.push_back(1.00f);
-        return result;
-    }
+    result.push_back(1.00f);
+    return result;
+}
 
 
 // Converts Cartesian coordinates to homogeneous coordinates
 vector<GLfloat> to_cartesian_coord(vector<GLfloat> homogenous_coords) {
     vector<GLfloat> result = homogenous_coords; // initialize with original coordinates
-
+    
     // Remove the 1 in the 4th dimension to generate Cartesian coordinates
-
+    
     // if it is a vector:
     if (homogenous_coords.size() == 4) {
         result.pop_back();
         return result;
     }
-
+    
     // if it is a 4x4 matrix
     for (int i = 3; i <=3*3; i += 3){
         result.erase(result.begin()+i);
@@ -128,28 +128,28 @@ vector<GLfloat> to_cartesian_coord(vector<GLfloat> homogenous_coords) {
 // Definition of a translation matrix
 vector<GLfloat> translation_matrix (float dx, float dy, float dz) {
     vector<GLfloat> translate_mat = {1.0f, 0.0f, 0.0f, dx,
-                                     0.0f, 1.0f, 0.0f, dy,
-                                     0.0f, 0.0f, 1.0f, dz,
-                                     0.0f, 0.0f, 0.0f, 1.0f};
+        0.0f, 1.0f, 0.0f, dy,
+        0.0f, 0.0f, 1.0f, dz,
+        0.0f, 0.0f, 0.0f, 1.0f};
     return translate_mat;
 }
 
 // Definition of a scaling matrix
 vector<GLfloat> scaling_matrix (float sx, float sy, float sz) {
     vector<GLfloat> scale_mat = {sx,   0.0f, 0.0f, 0.0f,
-                                 0.0f, sy,   0.0f, 0.0f,
-                                 0.0f, 0.0f, sz,   0.0f,
-                                 0.0f, 0.0f, 0.0f, 1.0f};
-
+        0.0f, sy,   0.0f, 0.0f,
+        0.0f, 0.0f, sz,   0.0f,
+        0.0f, 0.0f, 0.0f, 1.0f};
+    
     return scale_mat;
 }
 
 // Definition of a rotation matrix along the x-axis theta degrees
 vector<GLfloat> rotation_matrix_x (float theta) {
     vector<GLfloat> rotate_mat_x= {1.0f,        0.0f,        0.0f,        0.0f,
-                                   0.0f,        cos(theta), -sin(theta),  0.0f,
-                                   0.0f,        sin(theta),  cos(theta),  0.0f,
-                                   0.0f,        0.0f,        0.0f,        1.0f};
+        0.0f,        cos(theta), -sin(theta),  0.0f,
+        0.0f,        sin(theta),  cos(theta),  0.0f,
+        0.0f,        0.0f,        0.0f,        1.0f};
     return rotate_mat_x;
 }
 
@@ -157,9 +157,9 @@ vector<GLfloat> rotation_matrix_x (float theta) {
 // Definition of a rotation matrix along the y-axis by theta degrees
 vector<GLfloat> rotation_matrix_y (float theta) {
     vector<GLfloat> rotate_mat_y= { cos(theta), 0.0f, sin(theta), 0.0f,
-                                    0.0f,       1.0f, 0.0f      , 0.0f,
-                                   -sin(theta), 0.0f, cos(theta), 0.0f,
-                                    0.0f,       0.0f, 0.0f      , 1.0f};
+        0.0f,       1.0f, 0.0f      , 0.0f,
+        -sin(theta), 0.0f, cos(theta), 0.0f,
+        0.0f,       0.0f, 0.0f      , 1.0f};
     return rotate_mat_y;
 }
 
@@ -167,9 +167,9 @@ vector<GLfloat> rotation_matrix_y (float theta) {
 // Definition of a rotation matrix along the z-axis by theta degrees
 vector<GLfloat> rotation_matrix_z (float theta) {
     vector<GLfloat> rotate_mat_z= {cos(theta), -sin(theta), 0.0f,   0.0f,
-                                   sin(theta),  cos(theta), 0.0f,   0.0f,
-                                   0.0f,        0.0f,       1.0f,   0.0f,
-                                   0.0f,        0.0f,       0.0f,   1.0f};
+        sin(theta),  cos(theta), 0.0f,   0.0f,
+        0.0f,        0.0f,       1.0f,   0.0f,
+        0.0f,        0.0f,       0.0f,   1.0f};
     return rotate_mat_z;
 }
 
@@ -181,14 +181,14 @@ vector<GLfloat> mat_mult(vector<GLfloat> A, vector<GLfloat> B) {
     int r1, c1, r2, c2 = 0;
     int counterA = 0;
     int counterB = 0;
-
+    
     if(A.size() == 16){ r1 = 4;c1 = 4;}
     if(B.size() == 16){r2 = 4;c2 = 4;}
     if(A.size() == 4){r1 = 4;c1 = 1;}
     if(B.size() == 4){r2 = 4;c2 = 1;}
-
+    
     GLfloat a[r1][c1], b[r2][c2], C[r1][c2];
-
+    
     if (c1 != r2){
         cout << "Matrices cannot be multiplied!";
         exit(0);
@@ -200,13 +200,13 @@ vector<GLfloat> mat_mult(vector<GLfloat> A, vector<GLfloat> B) {
             counterA++;
         }
     // Copying B to matrix format
-
+    
     for (int i = 0; i < r2; i++)
         for (int j = 0; j < c2; j++){
             b[i][j] = B[counterB];
             counterB++;
         }
-
+    
     // Perform Multiplication
     for (int i = 0; i < r1; i++) {
         for (int j = 0; j < c2; j++) {
@@ -217,7 +217,7 @@ vector<GLfloat> mat_mult(vector<GLfloat> A, vector<GLfloat> B) {
             }
         }
     }
-
+    
     // Transform back to vector
     for (int i = 0; i < r1; i++) {
         for (int j = 0; j < c2; j++) {
@@ -244,7 +244,7 @@ vector<GLfloat> mult_many_points(vector<GLfloat> transformation_matrix, vector<G
 
 // Builds a unit cube centered at the origin
 vector<GLfloat> build_cube() {
-
+    
     vector<GLfloat> initial_plane = init_plane();
     // Creates a unit cube by transforming a set of planes. We do transformations in homogeneous but then transform back to cartesian
     vector<GLfloat> front = (mult_many_points(translation_matrix(0,0,0.5), initial_plane));
@@ -253,7 +253,7 @@ vector<GLfloat> build_cube() {
     vector<GLfloat> left = (mult_many_points(translation_matrix(-0.5,0,0), (mult_many_points(rotation_matrix_y(d2r(-90)), initial_plane))));
     vector<GLfloat> bottom = (mult_many_points(translation_matrix(0,-0.5,0), (mult_many_points(rotation_matrix_x(d2r( 90)), initial_plane))));
     vector<GLfloat> top = (mult_many_points(translation_matrix(0,0.5,0), (mult_many_points(rotation_matrix_x(d2r(-90)), initial_plane))));
-
+    
     // concatenate into one long vector
     vector<GLfloat> result;
     result = front;
@@ -262,7 +262,7 @@ vector<GLfloat> build_cube() {
     result.insert(end(result), begin(left), end(left));
     result.insert(end(result), begin(top), end(top));
     result.insert(end(result), begin(bottom), end(bottom));
-
+    
     return result;
 }
 
@@ -307,7 +307,7 @@ void init_camera() {
     //gluLookAt(0.0, 5.0, -6.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
     //gluLookAt(4, 5.0, -5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
     gluLookAt(2.0, 6.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-
+    
 }
 
 
@@ -373,7 +373,7 @@ GLfloat* init_scene() {
     monitor.insert(end(monitor), begin(base), end(base));
     monitor.insert(end(monitor), begin(base_stick), end(base_stick));
     monitor = mult_many_points(translation_matrix(0,0,0.5), monitor);
-
+    
     // concat all objects on scene
     scene.insert(end(scene), begin(shelf), end(shelf));
     scene.insert(end(scene), begin(chair), end(chair));
@@ -459,19 +459,20 @@ int main (int argc, char **argv) {
     glutInitWindowSize(800, 600);
     // Create a window with rendering context and everything else we need
     glutCreateWindow("Assignment 2");
-
+    
     setup();
     init_camera();
-
+    
     // Set up our display function
     glutDisplayFunc(display_func);
     glutIdleFunc(idle_func);
     // Render our world
     glutMainLoop();
-
+    
     // Remember to call "delete" on your dynmically allocated arrays
     // such that you don't suffer from memory leaks. e.g.
     // delete arr;
-
+    
     return 0;
 }
+
