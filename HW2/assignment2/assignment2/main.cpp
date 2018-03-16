@@ -345,9 +345,9 @@ GLfloat* init_scene() {
     
     // create shelf
     vector<GLfloat> shelf;
-    vector<GLfloat> shelf_top = mult_many_points(translation_matrix(-2,1,0.4), mult_many_points(scaling_matrix(1,0.1,1.2), cube));
-    vector<GLfloat> shelf_middle = mult_many_points(translation_matrix(-2,1.75,0.4), mult_many_points(scaling_matrix(1,0.1,1.2), cube));
-    vector<GLfloat> shelf_bottom = mult_many_points(translation_matrix(-2,0.25,0.4), mult_many_points(scaling_matrix(1,0.1,1.2), cube));
+    vector<GLfloat> shelf_top = mult_many_points(translation_matrix(-2,1,0.4), mult_many_points(scaling_matrix(0.9,0.1,1.2), cube));
+    vector<GLfloat> shelf_middle = mult_many_points(translation_matrix(-2,1.75,0.4), mult_many_points(scaling_matrix(0.9,0.1,1.2), cube));
+    vector<GLfloat> shelf_bottom = mult_many_points(translation_matrix(-2,0.25,0.4), mult_many_points(scaling_matrix(0.9,0.1,1.2), cube));
     vector<GLfloat> shelf_left_side = mult_many_points(translation_matrix(-2.5,1,0.4), mult_many_points(scaling_matrix(0.1,1.6,1.2), cube));
     vector<GLfloat> shelf_right_side = mult_many_points(translation_matrix(-1.5,1,0.4), mult_many_points(scaling_matrix(0.1,1.6,1.2), cube));
     shelf = shelf_top;
