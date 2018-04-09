@@ -246,7 +246,6 @@ vector<GLfloat> mat_mult(vector<GLfloat> A, vector<GLfloat> B) {
 vector<GLfloat> mult_many_points(vector<GLfloat> transformation_matrix, vector<GLfloat> points) {
     vector<GLfloat> result, homogeneous_point, mult_result;
     double nb_points = points.size();
-    cout << nb_points << '\n';
     
     for (double i = 0; i <int(nb_points/3); i ++){
         vector<GLfloat> point(points.begin()+i*3, points.begin()+i*3+3);
@@ -306,7 +305,9 @@ vector<GLfloat> generate_normals(vector<GLfloat> points) {
 // Performs the cross product between two vectors
 vector<GLfloat> cross_product(vector<GLfloat> A, vector<GLfloat> B) {
     vector<GLfloat> C;
-    
+    C.push_back(A[1]*B[2]-A[2]*B[1]);
+    C.push_back(A[0]*B[2]-A[2]*B[0]);
+    C.push_back(A[0]*B[1]-A[1]*B[0]);
     return C;
 }
 
@@ -547,6 +548,12 @@ void idle_func() {
 
 
 int main (int argc, char **argv) {
+    
+    vector<GLfloat> v = {1.0f,0.0f,0.0f};
+    vector<GLfloat> v2 = {0.0f,1.0f,0.0f};
+    vector<GLfloat> cross = cross_product(v,v2);
+    print(cross);
+    
     
     // Initialize GLUT
     glutInit(&argc, argv);
