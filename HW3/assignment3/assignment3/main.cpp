@@ -372,15 +372,6 @@ vector<GLfloat> init_base_color(GLfloat r0, GLfloat g0, GLfloat b0, GLfloat r1, 
     return base_color;
 }
 
-// Generates the colors of a set of surfaces based on the light source,
-// surface normals, and base color of the surface
-ObjectModel apply_shading(ObjectModel object_model, vector<GLfloat> light_source, vector<GLfloat> camera) {
-    vector<GLfloat> colors;
-    
-    object_model.set_colors(colors);
-    return object_model;
-}
-
 // Performs the dot product between two vectors
 GLfloat dot_product(vector<GLfloat> A, vector<GLfloat> B) {
     GLfloat result = 0.0;
@@ -390,6 +381,70 @@ GLfloat dot_product(vector<GLfloat> A, vector<GLfloat> B) {
     }
     return result;
 }
+
+// Adds two vectors
+vector<GLfloat> add(vector<GLfloat> A, vector<GLfloat> B){
+    vector<GLfloat> result;
+    transform(A.begin(), A.end(), B.begin(), back_inserter(result), [&](GLfloat l, GLfloat r){
+        return l + r;
+    });
+    return result;
+}
+
+// Modulo of a vector
+GLfloat modulo(vector<GLfloat> v) {
+    GLfloat result = 0.0;
+    for (int i = 0; i < v.size(); i++){
+        result = result + v[i]*v[i];
+    }
+    return sqrt(result);
+}
+
+
+//Generate h
+vector<GLfloat> get_h(vector<GLfloat> l, vector<GLfloat> v) {
+    vector<GLfloat> result;
+    vector<GLfloat> added = add(l, v);
+    GLfloat m = modulo(added);
+    
+    for(int i = 0; i < added.size(); i++) {
+        result.push_back(added[i]/m);
+    }
+    return result;
+}
+
+// Generates the colors of a set of surfaces based on the light source,
+// surface normals, and base color of the surface
+ObjectModel apply_shading(ObjectModel object_model, vector<GLfloat> light_source, vector<GLfloat> camera) {
+    vector<GLfloat> colors;
+    GLfloat Ir, Ib, Ig;
+    GLfloat amb_c = 0.15;
+    GLfloat diff_c = 0.2;
+    GLfloat spec_c = 0.2;
+    
+    vector<GLfloat> normals = object_model.get_normals();
+    vector<GLfloat> points = object_model.get_points();
+    vector<GLfloat> base_colors = object_model.get_base_colors();
+    vector<GLfloat> h = get_h(light_source, camera);
+    
+    for(int i=0; i <= points.size() - 3; i = i+3) {
+        vector<GLfloat> normal;
+        normal.insert(end(normal), begin(normals)+i, begin(points)+i+3);
+       
+        Ir = base_colors[i] * (amb_c + diff_c * dot_product(normals, light_source)+ spec_c * base_colors[i]* dot_product(normals, h));
+        Ig = base_colors[i+1] * (amb_c + diff_c * dot_product(normals, light_source)+ spec_c * base_colors[i+1]* dot_product(normals, h));
+        Ib = base_colors[i+2] * (amb_c + diff_c * dot_product(normals, light_source)+ spec_c * base_colors[i+2]* dot_product(normals, h));
+        colors.push_back(Ir);
+        colors.push_back(Ig);
+        colors.push_back(Ib);
+        
+    }
+    
+    object_model.set_colors(colors);
+    return object_model;
+}
+
+
 
 
 /**************************************************
@@ -578,11 +633,12 @@ void idle_func() {
 
 int main (int argc, char **argv) {
     
-    vector<GLfloat> v = {0.0f,0.0f,1.0f};
+    vector<GLfloat> v = {2.0f,2.0f,2.0f};
     vector<GLfloat> v2 = {0.0f,1.0f,0.0f};
     vector<GLfloat> normal = generate_normals(init_plane());
     GLfloat dot = dot_product(v,v2);
-    cout << dot << '\n' ;
+    GLfloat mod = modulo(v);
+    cout << mod << '\n' ;
     
     
     // Initialize GLUT
