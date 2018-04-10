@@ -383,8 +383,12 @@ ObjectModel apply_shading(ObjectModel object_model, vector<GLfloat> light_source
 
 // Performs the dot product between two vectors
 GLfloat dot_product(vector<GLfloat> A, vector<GLfloat> B) {
+    GLfloat result = 0.0;
     
-    return 0.0;
+    for (int i=0; i < A.size(); i++) {
+        result = result + A[i]*B[i];
+    }
+    return result;
 }
 
 
@@ -577,7 +581,8 @@ int main (int argc, char **argv) {
     vector<GLfloat> v = {0.0f,0.0f,1.0f};
     vector<GLfloat> v2 = {0.0f,1.0f,0.0f};
     vector<GLfloat> normal = generate_normals(init_plane());
-    print(normal);
+    GLfloat dot = dot_product(v,v2);
+    cout << dot << '\n' ;
     
     
     // Initialize GLUT
