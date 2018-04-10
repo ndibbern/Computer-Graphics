@@ -291,6 +291,24 @@ vector<GLfloat> build_cube() {
  *                                                *
  *************************************************/
 
+// Performs the cross product between two vectors
+vector<GLfloat> cross_product(vector<GLfloat> A, vector<GLfloat> B) {
+    vector<GLfloat> C;
+    C.push_back(A[1]*B[2]-A[2]*B[1]);
+    C.push_back(A[0]*B[2]-A[2]*B[0]);
+    C.push_back(A[0]*B[1]-A[1]*B[0]);
+    return C;
+}
+
+// Substracts two vectors
+vector<GLfloat> substract(vector<GLfloat> A, vector<GLfloat> B){
+    vector<GLfloat> result;
+    transform(A.begin(), A.end(), B.begin(), back_inserter(result), [&](GLfloat l, GLfloat r){
+        return l - r;
+    });
+    return result;
+}
+
 // Generates the normals to each surface (plane)
 vector<GLfloat> generate_normals(vector<GLfloat> points) {
     vector<GLfloat> normals;
@@ -299,16 +317,23 @@ vector<GLfloat> generate_normals(vector<GLfloat> points) {
     // to generate your vectors such that the normals (given by the
     // cross product, point to the correct direction
     
+    for(int i=0; i <= points.size() - 12; i = i+12) {
+        vector<GLfloat> cross_prod, q0, q1, q2, q3, sub1, sub2;
+        // pick up points
+        q0.insert(end(q0), begin(points)+i, begin(points)+i+3);
+        q1.insert(end(q1), begin(points)+i+3, begin(points)+i+6);
+        q2.insert(end(q2), begin(points)+i+6, begin(points)+i+9);
+        q3.insert(end(q3), begin(points)+i+9, begin(points)+i+12);
+        // generate substractions
+        sub1 = substract(q1, q0);
+        sub2 = substract(q3, q0);
+        cross_prod = cross_product(sub1, sub2);
+        
+        for(int i=0; i < 4; i++){
+            normals.insert(end(normals), begin(cross_prod), end(cross_prod));
+        }
+    }
     return normals;
-}
-
-// Performs the cross product between two vectors
-vector<GLfloat> cross_product(vector<GLfloat> A, vector<GLfloat> B) {
-    vector<GLfloat> C;
-    C.push_back(A[1]*B[2]-A[2]*B[1]);
-    C.push_back(A[0]*B[2]-A[2]*B[0]);
-    C.push_back(A[0]*B[1]-A[1]*B[0]);
-    return C;
 }
 
 
@@ -549,10 +574,10 @@ void idle_func() {
 
 int main (int argc, char **argv) {
     
-    vector<GLfloat> v = {1.0f,0.0f,0.0f};
+    vector<GLfloat> v = {0.0f,0.0f,1.0f};
     vector<GLfloat> v2 = {0.0f,1.0f,0.0f};
-    vector<GLfloat> cross = cross_product(v,v2);
-    print(cross);
+    vector<GLfloat> normal = generate_normals(init_plane());
+    print(normal);
     
     
     // Initialize GLUT
