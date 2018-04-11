@@ -69,6 +69,8 @@ float theta = 0.0;
 // Transforms from degrees to radians
 static double d2r(double d) {
     return (d / 180.0) * ((double) M_PI);
+    
+    ObjectModel o = ObjectModel();
 }
 
 // Prints a vector
@@ -415,33 +417,38 @@ vector<GLfloat> get_h(vector<GLfloat> l, vector<GLfloat> v) {
 
 // Generates the colors of a set of surfaces based on the light source,
 // surface normals, and base color of the surface
-ObjectModel apply_shading(ObjectModel object_model, vector<GLfloat> light_source, vector<GLfloat> camera) {
+vector<GLfloat> apply_shading(vector<GLfloat> normals, vector<GLfloat> points, vector<GLfloat> base_colors, vector<GLfloat> light_source, vector<GLfloat> camera) {
     vector<GLfloat> colors;
     GLfloat Ir, Ib, Ig;
-    GLfloat amb_c = 0.15;
+    GLfloat amb_c = 0.6;
     GLfloat diff_c = 0.2;
     GLfloat spec_c = 0.2;
-    
-    vector<GLfloat> normals = object_model.get_normals();
-    vector<GLfloat> points = object_model.get_points();
-    vector<GLfloat> base_colors = object_model.get_base_colors();
+//    vector<GLfloat> normals = object_model.get_normals();
+//    vector<GLfloat> points = object_model.get_points();
+//    vector<GLfloat> base_colors = object_model.get_base_colors();
     vector<GLfloat> h = get_h(light_source, camera);
     
     for(int i=0; i <= points.size() - 3; i = i+3) {
         vector<GLfloat> normal;
-        normal.insert(end(normal), begin(normals)+i, begin(points)+i+3);
-       
-        Ir = base_colors[i] * (amb_c + diff_c * dot_product(normals, light_source)+ spec_c * base_colors[i]* dot_product(normals, h));
-        Ig = base_colors[i+1] * (amb_c + diff_c * dot_product(normals, light_source)+ spec_c * base_colors[i+1]* dot_product(normals, h));
-        Ib = base_colors[i+2] * (amb_c + diff_c * dot_product(normals, light_source)+ spec_c * base_colors[i+2]* dot_product(normals, h));
+        normal.insert(end(normal), begin(normals)+i, begin(normals)+i+3);
+        Ir = base_colors[i] * (amb_c + diff_c * dot_product(normal, light_source)+ spec_c * base_colors[i]* dot_product(normal, h));
+        Ig = base_colors[i+1] * (amb_c + diff_c * dot_product(normal, light_source)+ spec_c * base_colors[i+1]* dot_product(normal, h));
+        Ib = base_colors[i+2] * (amb_c + diff_c * dot_product(normal, light_source)+ spec_c * base_colors[i+2]* dot_product(normal, h));
+        //Ir = base_colors[i] * (amb_c + diff_c * dot_product(normal, light_source));
+        //Ig = base_colors[i+1] * (amb_c + diff_c * dot_product(normal, light_source));
+        //Ib = base_colors[i+2] * (amb_c + diff_c * dot_product(normal, light_source));
+//        Ir = base_colors[i] * (amb_c+diff_c * dot_product(normal, light_source));
+//        Ig = base_colors[i+1] * (amb_c+diff_c * dot_product(normal, light_source));
+//        Ib = base_colors[i+2] * (amb_c+diff_c * dot_product(normal, light_source));
+        //cout << base_colors[i] << ',' << base_colors[i+1] << ',' << base_colors[i+2] << '\n';
+        //cout << Ir << ',' << Ig << ',' << Ib << '\n';
         colors.push_back(Ir);
         colors.push_back(Ig);
         colors.push_back(Ib);
         
     }
     
-    object_model.set_colors(colors);
-    return object_model;
+    return colors;
 }
 
 
@@ -492,7 +499,7 @@ void init_camera() {
 
 
 // Construct the scene using objects built from cubes/prisms
-GLfloat* init_scene() {
+vector<GLfloat> init_scene_vector() {
     // declare scene and initialize cube
     vector<GLfloat> scene;
     vector<GLfloat> cube = build_cube();
@@ -560,10 +567,19 @@ GLfloat* init_scene() {
     scene.insert(end(scene), begin(table), end(table));
     scene.insert(end(scene), begin(notebook), end(notebook));
     scene.insert(end(scene), begin(monitor), end(monitor));
+    return scene;
+}
+
+
+
+// Construct the scene using objects built from cubes/prisms
+GLfloat* init_scene() {
+    // declare scene and initialize cube
+    vector<GLfloat> scene = init_scene_vector();
     return vector2array(scene);
 }
-// Generate random value
 
+// Generate random value
 GLfloat random(float start, float end){
     random_device rd;
     default_random_engine generator(rd()); // rd() provides a random seed
@@ -575,20 +591,24 @@ GLfloat random(float start, float end){
 vector<GLfloat> get_colors(int sides_nb){
     vector<GLfloat> final_vector;
     GLfloat rand; // I create my color vector with random values on a range, so I can have a sense of surface
-    for(int i=0; i < sides_nb*12; i++){
-        rand = random(0.1,0.4);
-        final_vector.push_back(rand);
+    for(int i=0; i < sides_nb*12/3; i++){
+//        rand = random(0.1,0.4);
+//        final_vector.push_back(rand);
+        final_vector.push_back(0.65);
+        final_vector.push_back(0.50);
+        final_vector.push_back(0.39);
     }
     return final_vector;
 }
 vector<GLfloat> color_vector = get_colors(6*20);
 
 // Construct the color mapping of the scene
-GLfloat* init_color(int sides_nb) {
-    return vector2array(color_vector);
+GLfloat* init_color() {
+    vector<GLfloat> points = init_scene_vector();
+    vector<GLfloat> normals = generate_normals(points);
+   vector<GLfloat> colors = apply_shading(normals, points, color_vector, {2.0f, 1.0f, 5.0f}, {-2.0f, -3.0f, -5.0f});
+    return vector2array(colors);
 }
-
-
 
 void display_func() {
     int sides_nb = 6*20; // 20 is the number of "cubes" I transformed, I do this to make sure I create the correct color size vector
@@ -602,7 +622,7 @@ void display_func() {
     glRotatef(theta, 0.0, 1, 0.0);
     
     GLfloat* vertices = init_scene();
-    GLfloat* colors = init_color(sides_nb);
+    GLfloat* colors = init_color();
     
     glVertexPointer(3,          // 3 components (x, y, z)
                     GL_FLOAT,   // Vertex type is GL_FLOAT
@@ -632,10 +652,14 @@ void idle_func() {
 
 
 int main (int argc, char **argv) {
-    
     vector<GLfloat> v = {2.0f,2.0f,2.0f};
     vector<GLfloat> v2 = {0.0f,1.0f,0.0f};
-    vector<GLfloat> normal = generate_normals(init_plane());
+    vector<GLfloat> plane = init_plane();
+
+    vector<GLfloat> hola;
+    hola.insert(end(hola), begin(plane), end(plane));
+    hola.insert(end(hola), begin(plane), end(plane));
+    hola.insert(end(hola), begin(plane), end(plane));
     GLfloat dot = dot_product(v,v2);
     GLfloat mod = modulo(v);
     cout << mod << '\n' ;
