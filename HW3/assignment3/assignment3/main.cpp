@@ -420,8 +420,8 @@ vector<GLfloat> get_h(vector<GLfloat> l, vector<GLfloat> v) {
 vector<GLfloat> apply_shading(vector<GLfloat> normals, vector<GLfloat> points, vector<GLfloat> base_colors, vector<GLfloat> light_source, vector<GLfloat> camera) {
     vector<GLfloat> colors;
     GLfloat Ir, Ib, Ig;
-    GLfloat amb_c = 0.6;
-    GLfloat diff_c = 0.2;
+    GLfloat amb_c = 0.45;
+    GLfloat diff_c = 0.15;
     GLfloat spec_c = 0.2;
 //    vector<GLfloat> normals = object_model.get_normals();
 //    vector<GLfloat> points = object_model.get_points();
@@ -434,14 +434,6 @@ vector<GLfloat> apply_shading(vector<GLfloat> normals, vector<GLfloat> points, v
         Ir = base_colors[i] * (amb_c + diff_c * dot_product(normal, light_source)+ spec_c * base_colors[i]* dot_product(normal, h));
         Ig = base_colors[i+1] * (amb_c + diff_c * dot_product(normal, light_source)+ spec_c * base_colors[i+1]* dot_product(normal, h));
         Ib = base_colors[i+2] * (amb_c + diff_c * dot_product(normal, light_source)+ spec_c * base_colors[i+2]* dot_product(normal, h));
-        //Ir = base_colors[i] * (amb_c + diff_c * dot_product(normal, light_source));
-        //Ig = base_colors[i+1] * (amb_c + diff_c * dot_product(normal, light_source));
-        //Ib = base_colors[i+2] * (amb_c + diff_c * dot_product(normal, light_source));
-//        Ir = base_colors[i] * (amb_c+diff_c * dot_product(normal, light_source));
-//        Ig = base_colors[i+1] * (amb_c+diff_c * dot_product(normal, light_source));
-//        Ib = base_colors[i+2] * (amb_c+diff_c * dot_product(normal, light_source));
-        //cout << base_colors[i] << ',' << base_colors[i+1] << ',' << base_colors[i+2] << '\n';
-        //cout << Ir << ',' << Ig << ',' << Ib << '\n';
         colors.push_back(Ir);
         colors.push_back(Ig);
         colors.push_back(Ib);
@@ -606,7 +598,7 @@ vector<GLfloat> color_vector = get_colors(6*20);
 GLfloat* init_color() {
     vector<GLfloat> points = init_scene_vector();
     vector<GLfloat> normals = generate_normals(points);
-   vector<GLfloat> colors = apply_shading(normals, points, color_vector, {2.0f, 1.0f, 5.0f}, {-2.0f, -3.0f, -5.0f});
+   vector<GLfloat> colors = apply_shading(normals, points, color_vector, {-2.0f, -1.0f, -5.0f}, {-2.0f, -3.0f, -5.0f});
     return vector2array(colors);
 }
 
@@ -652,19 +644,6 @@ void idle_func() {
 
 
 int main (int argc, char **argv) {
-    vector<GLfloat> v = {2.0f,2.0f,2.0f};
-    vector<GLfloat> v2 = {0.0f,1.0f,0.0f};
-    vector<GLfloat> plane = init_plane();
-
-    vector<GLfloat> hola;
-    hola.insert(end(hola), begin(plane), end(plane));
-    hola.insert(end(hola), begin(plane), end(plane));
-    hola.insert(end(hola), begin(plane), end(plane));
-    GLfloat dot = dot_product(v,v2);
-    GLfloat mod = modulo(v);
-    cout << mod << '\n' ;
-    
-    
     // Initialize GLUT
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
