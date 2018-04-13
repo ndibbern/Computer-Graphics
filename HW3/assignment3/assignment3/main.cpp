@@ -419,9 +419,6 @@ vector<GLfloat> apply_shading(vector<GLfloat> normals, vector<GLfloat> points, v
     GLfloat amb_c = 0.45;
     GLfloat diff_c = 0.15;
     GLfloat spec_c = 0.2;
-//    vector<GLfloat> normals = object_model.get_normals();
-//    vector<GLfloat> points = object_model.get_points();
-//    vector<GLfloat> base_colors = object_model.get_base_colors();
     vector<GLfloat> h = get_h(light_source, camera);
     
     for(int i=0; i <= points.size() - 3; i = i+3) {
@@ -491,7 +488,7 @@ vector<GLfloat> init_scene_vector() {
     // declare scene and initialize cube
     vector<GLfloat> scene;
     vector<GLfloat> cube = build_cube();
-    
+
     // Create table
     vector<GLfloat> table;
     vector<GLfloat> table_top = mult_many_points(translation_matrix(0,2,0), mult_many_points(scaling_matrix(2,0.1,1),   cube));
@@ -550,14 +547,14 @@ vector<GLfloat> init_scene_vector() {
     monitor = mult_many_points(translation_matrix(0,0,0.5), monitor);
     
     // create second shelf
-    vector<GLfloat> shelf2 = mult_many_points(scaling_matrix(1,2,1), shelf);;
+    vector<GLfloat> shelf2 = mult_many_points(scaling_matrix(1,2,1), shelf);
     shelf2 = mult_many_points(translation_matrix(4.22,-0.1,0), shelf2);;
     
     
     // concat all objects on scene
-    scene.insert(end(scene), begin(shelf), end(shelf));
-    scene.insert(end(scene), begin(chair), end(chair));
     scene.insert(end(scene), begin(table), end(table));
+    scene.insert(end(scene), begin(chair), end(chair));
+    scene.insert(end(scene), begin(shelf), end(shelf));
     scene.insert(end(scene), begin(notebook), end(notebook));
     scene.insert(end(scene), begin(monitor), end(monitor));
     scene.insert(end(scene), begin(shelf2), end(shelf2));
@@ -571,16 +568,74 @@ GLfloat* init_scene() {
     return vector2array(scene);
 }
 
-vector<GLfloat> get_colors(int sides_nb){
+
+// COLORS:
+//  wheat: 0.847059 0.847059  0.74902  --> one shelf
+// light wood: 0.65, 0.50, 0.39        --> table, chair
+// sienna:  0.556863 green 0.419608 blue 0.137255
+// dark slate gray 0.184314 green 0.309804 blue 0.309804   medio azulado
+// gray oscuro: color red 0.329412 green 0.329412 blue 0.329412 --> monitor
+// salmon :  0.435294 green 0.258824 blue 0.258824
+// LightBlue = color red 0.74902 green 0.847059 blue 0.847059
+// neon pink" color red 1.00 green 0.43 blue 0.78
+// dark brown: color red 0.36 green 0.25 blue 0.20
+// quarz : color red 0.85 green 0.85 blue 0.95
+
+// table 5
+// chair 6
+// shelf 5
+// notebook 1
+// screen 3
+// second shelf 5
+
+vector<GLfloat> get_colors(){
     vector<GLfloat> final_vector;
-    for(int i=0; i < sides_nb*4; i++){
+    
+    // table
+    for(int i=0; i < 6*5*4; i++){
+        final_vector.push_back(0.36);
+        final_vector.push_back(0.25);
+        final_vector.push_back(0.20);
+    }
+    
+    // chair
+    for(int i=0; i < 6*6*4; i++){
         final_vector.push_back(0.65);
         final_vector.push_back(0.50);
         final_vector.push_back(0.39);
     }
+    
+    // shelf
+    for(int i=0; i < 6*5*4; i++){
+        
+        final_vector.push_back(0.85);
+        final_vector.push_back(0.85);
+        final_vector.push_back(0.95);
+    }
+    
+    // notebook
+    for(int i=0; i < 6*1*4; i++){
+        final_vector.push_back(1.00);
+        final_vector.push_back(0.43);
+        final_vector.push_back(0.78);
+    }
+    
+    // screen
+    for(int i=0; i < 6*3*4; i++){
+        final_vector.push_back(0.1);
+        final_vector.push_back(0.1);
+        final_vector.push_back(0.102);
+    }
+    
+    // second shelf
+    for(int i=0; i < 6*5*4; i++){
+        final_vector.push_back(0.847059);
+        final_vector.push_back(0.847059);
+        final_vector.push_back(0.74902);
+    }
     return final_vector;
 }
-vector<GLfloat> color_vector = get_colors(6*25);
+vector<GLfloat> color_vector = get_colors();
 
 // Construct the color mapping of the scene
 GLfloat* init_color() {
