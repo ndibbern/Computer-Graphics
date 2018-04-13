@@ -436,9 +436,6 @@ vector<GLfloat> apply_shading(vector<GLfloat> normals, vector<GLfloat> points, v
     return colors;
 }
 
-
-
-
 /**************************************************
  *            Camera and World Modeling           *
  *                                                *
@@ -548,8 +545,11 @@ vector<GLfloat> init_scene_vector() {
     
     // create second shelf
     vector<GLfloat> shelf2 = mult_many_points(scaling_matrix(1,2,1), shelf);
-    shelf2 = mult_many_points(translation_matrix(4.22,-0.1,0), shelf2);;
+    shelf2 = mult_many_points(translation_matrix(4.22,-0.1,0), shelf2);
     
+    // create books
+    vector<GLfloat> book1 = mult_many_points(translation_matrix(2.51,2.2,0.4), mult_many_points(scaling_matrix(0.1,1.2,1.2), cube));
+
     
     // concat all objects on scene
     scene.insert(end(scene), begin(table), end(table));
@@ -558,6 +558,7 @@ vector<GLfloat> init_scene_vector() {
     scene.insert(end(scene), begin(notebook), end(notebook));
     scene.insert(end(scene), begin(monitor), end(monitor));
     scene.insert(end(scene), begin(shelf2), end(shelf2));
+    scene.insert(end(scene), begin(book1), end(book1));
     return scene;
 }
 
@@ -633,9 +634,18 @@ vector<GLfloat> get_colors(){
         final_vector.push_back(0.847059);
         final_vector.push_back(0.74902);
     }
+    
+    // book1
+    for(int i=0; i < 6*1*4; i++){
+        final_vector.push_back(0.74902);
+        final_vector.push_back(0.847059);
+        final_vector.push_back(0.847059);
+    }
+
     return final_vector;
 }
 vector<GLfloat> color_vector = get_colors();
+
 
 // Construct the color mapping of the scene
 GLfloat* init_color() {
@@ -646,7 +656,7 @@ GLfloat* init_color() {
 }
 
 void display_func() {
-    int sides_nb = 6*25; // 20 is the number of "cubes" I transformed, I do this to make sure I create the correct color size vector
+    int sides_nb = 6*26; // 20 is the number of "cubes" I transformed, I do this to make sure I create the correct color size vector
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     // World model parameters
