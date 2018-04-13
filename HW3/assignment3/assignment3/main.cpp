@@ -1,15 +1,11 @@
 /***
  Assignment-3: Shading via Lighting and Colors
  
- Name: Wong, Alex (Please write your name in Last Name, First Name format)
+ Name: Dibbern, Natalia
+ Collaborators: Me myself and I (as usual)
  
- Collaborators: Doe, John; Doe, Jane
- ** Note: although the assignment should be completed individually
- you may speak with classmates on high level algorithmic concepts. Please
- list their names in this section
- 
- Project Summary: A short paragraph (3-4 sentences) describing the work you
- did for the project.
+ Project Summary: This project was a continuation of project II. This time
+we create the colors for each object and implement a shading
  ***/
 
 
@@ -485,7 +481,7 @@ void init_camera() {
     //gluLookAt(-3.0, 5.0, -6.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
     //gluLookAt(0.0, 5.0, -6.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
     //gluLookAt(4, 5.0, -5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-    gluLookAt(2.0, 6.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    gluLookAt(2.0, 6.0, 5, 0.0, 0.0, 0.0, 0.0, 100.0, 0.0);
     
 }
 
@@ -553,16 +549,20 @@ vector<GLfloat> init_scene_vector() {
     monitor.insert(end(monitor), begin(base_stick), end(base_stick));
     monitor = mult_many_points(translation_matrix(0,0,0.5), monitor);
     
+    // create second shelf
+    vector<GLfloat> shelf2 = mult_many_points(scaling_matrix(1,2,1), shelf);;
+    shelf2 = mult_many_points(translation_matrix(4.22,-0.1,0), shelf2);;
+    
+    
     // concat all objects on scene
     scene.insert(end(scene), begin(shelf), end(shelf));
     scene.insert(end(scene), begin(chair), end(chair));
     scene.insert(end(scene), begin(table), end(table));
     scene.insert(end(scene), begin(notebook), end(notebook));
     scene.insert(end(scene), begin(monitor), end(monitor));
+    scene.insert(end(scene), begin(shelf2), end(shelf2));
     return scene;
 }
-
-
 
 // Construct the scene using objects built from cubes/prisms
 GLfloat* init_scene() {
@@ -571,28 +571,16 @@ GLfloat* init_scene() {
     return vector2array(scene);
 }
 
-// Generate random value
-GLfloat random(float start, float end){
-    random_device rd;
-    default_random_engine generator(rd()); // rd() provides a random seed
-    uniform_real_distribution<double> distribution(start,end);
-    GLfloat number = (GLfloat) distribution(generator);
-    return number;
-}
-
 vector<GLfloat> get_colors(int sides_nb){
     vector<GLfloat> final_vector;
-    GLfloat rand; // I create my color vector with random values on a range, so I can have a sense of surface
-    for(int i=0; i < sides_nb*12/3; i++){
-//        rand = random(0.1,0.4);
-//        final_vector.push_back(rand);
+    for(int i=0; i < sides_nb*4; i++){
         final_vector.push_back(0.65);
         final_vector.push_back(0.50);
         final_vector.push_back(0.39);
     }
     return final_vector;
 }
-vector<GLfloat> color_vector = get_colors(6*20);
+vector<GLfloat> color_vector = get_colors(6*25);
 
 // Construct the color mapping of the scene
 GLfloat* init_color() {
@@ -603,7 +591,7 @@ GLfloat* init_color() {
 }
 
 void display_func() {
-    int sides_nb = 6*20; // 20 is the number of "cubes" I transformed, I do this to make sure I create the correct color size vector
+    int sides_nb = 6*25; // 20 is the number of "cubes" I transformed, I do this to make sure I create the correct color size vector
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     // World model parameters
