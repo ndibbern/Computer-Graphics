@@ -5,7 +5,9 @@
  Collaborators: Me myself and I (as usual)
  
  Project Summary: This project was a continuation of project II. This time
-we create the colors for each object and implement a shading
+ we create the colors for each object and implement shading. I tried to choose
+ nice colors that are representative of the real life objects. I added two more obects
+ to my old scene, a book and a larger shelf. 
  ***/
 
 
